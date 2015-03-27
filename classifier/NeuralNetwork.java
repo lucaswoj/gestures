@@ -71,7 +71,6 @@ public class NeuralNetwork {
         assert(!Double.isNaN(sensitivity));
         previousLayerSensitivities[j] = sensitivity;
 
-        // TODO which sensitivity should we use here?
         for (int k = 0; k < nextLayerNeuronCount; k++) {
           weights[k][j] += sensitivity * calculateActivation(previousLayerOutputs[j]);
           assert(!Double.isNaN(weights[k][j]) && !Double.isInfinite(weights[k][j]));
@@ -131,7 +130,7 @@ public class NeuralNetwork {
   }
 
   private double calculateActivationDerivitive(double input) {
-    return Math.exp(input) / Math.pow(1 + Math.exp(-input), 2);
+    return Math.exp(input) / Math.pow(1 + Math.exp(input), 2);
   }
 
   private double calculateErrorPartialDerivitive(double actual, double target) {
