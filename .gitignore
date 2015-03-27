@@ -1,1 +1,7 @@
-wiki
+/wiki
+/nbproject/private/
+/nbproject
+/build/
+build.xml
+manifest.mf
+*.class

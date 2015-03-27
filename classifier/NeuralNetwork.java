@@ -1,4 +1,5 @@
 import java.util.Collections;
+import java.util.ArrayList;
 
 public class NeuralNetwork {
 
@@ -7,132 +8,142 @@ public class NeuralNetwork {
   public NeuralNetwork(int[] neuronCounts) {
     int layerCount = neuronCounts.length;
 
-    // Refactor to use a flat float array of floats with a custom indexing
-    // scheme
-    this.weights = new ArrayList<float[][]>;
+    this.weights = new ArrayList<double[][]>();
 
-    // Iterating over layers
+    // Iterating over layers, skipping the input layer
     for (int i = 0; i < layerCount - 1; i++) {
-      int layerNeuronCount = neuronCounts[i]
-      int previousLayerNeuronCount = neuronCounts[i + 1]
+      int previousLayerNeuronCount = neuronCounts[i];
+      int layerNeuronCount = neuronCounts[i + 1];
 
-      this.weights[i] = new float[layerNeuronCount][previousLayerNeuronCount];
+      // This effectively sets index i
+      double[][] layerWeights = new double[layerNeuronCount][previousLayerNeuronCount];
+      
       // Iterating over nodes in this layer
       for (int j = 0; j < layerNeuronCount; j++) {
         for (int k = 0; k < previousLayerNeuronCount; k++) {
-          this.weights[i][j][k] = Math.random();
+          layerWeights[j][k] = Math.random();
         }
       }
+      
+      this.weights.add(layerWeights);
     }
   }
 
-  public NeuralNetwork(ArrayList<float[][]> weights) {
+  public NeuralNetwork(ArrayList<double[][]> weights) {
     this.weights = weights;
   }
 
   // Returns the error after updating weights
-  public float train(float[] inputs, float[] outputsTarget) {
-    int layersCount = this.weights.length;
-
-    ArrayList<float[][]> layerOutputs = new ArrayList<float[][]>();
-    classify(inputs, layerOutputs);
-
+  public void train(double[] inputs, double[] outputsTarget) {
+    ArrayList<double[]> layersOutputs = new ArrayList<double[]>();
+    classify(inputs, layersOutputs);
+    
     // Calculate sensitivities for the output nodes
-    int outputNeuronCount = this.weights[layersCount - 1].length;
-    float[] nextLayerSensitivities = new float[outputNeuronCount];
+    int outputNeuronCount = this.weights.get(this.weights.size() - 1).length;
+    double[] nextLayerSensitivities = new double[outputNeuronCount];
     for (int i = 0; i < outputNeuronCount; i++) {
-      nextLayerSensitivities[i] = errorFunctionPartialDerivitive(
-        layerOutputs[layerOutputs.length - 1][i],
+      nextLayerSensitivities[i] = calculateErrorPartialDerivitive(
+        layersOutputs.get(layersOutputs.size() - 1)[i],
         outputsTarget[i]
       );
+      assert(!Double.isNaN(nextLayerSensitivities[i]));
     }
 
-    for (int i = layerCount - 1; i >= 0; i--) {
-      int layerNeuronCount = this.weights[i].length;
-      int nextLayerNeuronCount = nextLayerSensitivities.length;
+    for (int i = this.weights.size() - 1; i >= 0; i--) {
+      double[][] weights = this.weights.get(i);
+      
+      int previousLayerNeuronCount = weights[0].length;
+      int nextLayerNeuronCount = weights.length;
+      assert(nextLayerSensitivities.length == nextLayerNeuronCount);
 
-      float[] previousLayerOutputs = layerOutputs[i - 1];
-      float[] layerOutputs = layerOutputs[i];
-      float[] nextLayerSensitivities = new float[layerNeuronCount];
+      double[] previousLayerOutputs = layersOutputs.get(i);
+      double[] previousLayerSensitivities = new double[previousLayerNeuronCount];
 
-      for (int j = 0; j < neuronCount; j++) {
+      // Iterate over neurons in the previous layer
+      for (int j = 0; j < previousLayerNeuronCount; j++) {
 
         // Calculate the sensitivity of this node
-        float sensitivity = 0;
+        double sensitivity = 0;
         for (int k = 0; k < nextLayerNeuronCount; k++) {
-          sensitivity += nextLayerSensitivities[k] * this.weights[i][j][k];
+          sensitivity += nextLayerSensitivities[k] * weights[k][j];
         }
-        sensitivity *= activationFunctionDerivitive(previousLayerOutputs[j]);
-        nextLayerSensitivities[j] = sensitivity;
+        sensitivity *= calculateActivationDerivitive(previousLayerOutputs[j]);
+        assert(!Double.isNaN(sensitivity));
+        previousLayerSensitivities[j] = sensitivity;
 
         // TODO which sensitivity should we use here?
         for (int k = 0; k < nextLayerNeuronCount; k++) {
-          this.weights[i][j][k] += sensitivity * activationFunction(previousLayerOutputs[j]);
+          weights[k][j] += sensitivity * calculateActivation(previousLayerOutputs[j]);
+          assert(!Double.isNaN(weights[k][j]) && !Double.isInfinite(weights[k][j]));
         }
-
       }
 
-      nextLayerSensitivities = nextLayerSensitivities;
+      nextLayerSensitivities = previousLayerSensitivities;
     }
   }
 
-  public float[] classify(float[] inputs, ArrayList<float[]> layerOutputs) {
-    assert(layerOutputs.isEmpty());
+  public double[] classify(double[] inputs) {
+    return classify(inputs, null);
+  }
 
-    int layersCount = this.weights.length;
+  public double[] classify(double[] inputs, ArrayList<double[]> layersOutputsUnactivated) {
+    assert(layersOutputsUnactivated == null || layersOutputsUnactivated.isEmpty());
+    assert(inputs.length == this.weights.get(0)[0].length);
+    
+    if (layersOutputsUnactivated != null) layersOutputsUnactivated.add(inputs);
+    
+    int layerCount = this.weights.size();
 
-    for (int i = 0; i < layersCount; i++) {
-
-
-      int neuronCount = this.weights[i].length;
-
+    for (int i = 0; i < layerCount; i++) {
+      int neuronCount = this.weights.get(i).length;
       int lengthInputs = inputs.length;
-      int lengthOutputs = this.weights[i].length;
+      int lengthOutputs = this.weights.get(i).length;
 
-      float[] outputs = new float[lengthOutputs];
-      layerOutputs[i] = new float[lengthOutputs];
+      double[] outputsUnactivated = new double[lengthOutputs];
+      double[] outputs = new double[lengthOutputs];
 
       // Iterating over each neuron in layer
       for (int j = 0; j < neuronCount; j++) {
-        assert(lengthInputs == this.weights[i][j].length);
+        assert(lengthInputs == this.weights.get(i)[j].length);
 
         // Iterating over each input value
-        float output = 0;
-        for (int k = 0; k < this.weights[i][j].length; k++) {
-          output += inputs[k] * this.weights[i][j][k]
+        double output = 0;
+        for (int k = 0; k < inputs.length; k++) {
+          output += inputs[k] * this.weights.get(i)[j][k];
         }
-        layerOutputs[i][j] = output;
-        outputs[j] = activationFunction(output);
-
+        assert(!Double.isNaN(output));
+        outputsUnactivated[j] = output;
+        outputs[j] = calculateActivation(output);
       }
 
+      if (layersOutputsUnactivated != null) layersOutputsUnactivated.add(outputsUnactivated);
       inputs = outputs;
     }
 
-    return layerOutputs[layerOutputs.length - 1];
+    return inputs;
   }
 
   // (layers) * (nodes in layer) * (nodes in previous layer)
-  private ArrayList<float[][]> weights;
+  private ArrayList<double[][]> weights;
 
-  private float activationFunction(float input) {
+  private double calculateActivation(double input) {
     return 1 / (1 + Math.exp(-input));
   }
 
-  private float activationFunctionDerivitive(float input) {
+  private double calculateActivationDerivitive(double input) {
     return Math.exp(input) / Math.pow(1 + Math.exp(-input), 2);
   }
 
-  private float errorFunctionPartialDerivitive(float actual, float target) {
+  private double calculateErrorPartialDerivitive(double actual, double target) {
     return 2 * (actual - target);
   }
 
   // Uses sum of squares, but other formulas are possible
-  private float errorFunction(float[] outputsActual, float[] outputsTarget) {
+  private double calculateError(double[] outputsActual, double[] outputsTarget) {
     assert(outputsActual.length == outputsTarget.length);
     int length = outputsActual.length;
 
-    float error = 0;
+    double error = 0;
     for (int i = 0; i < length; i++) {
       error += Math.pow(outputsActual[i] - outputsTarget[i], 2);
     }
