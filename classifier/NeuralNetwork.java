@@ -41,9 +41,10 @@ public class NeuralNetwork {
     // Calculate sensitivities for the output nodes
     int outputNeuronCount = this.weights.get(this.weights.size() - 1).length;
     double[] nextLayerSensitivities = new double[outputNeuronCount];
+    assert(layersOutputs.get(layersOutputs.size() - 1).length == outputNeuronCount);
     for (int i = 0; i < outputNeuronCount; i++) {
       nextLayerSensitivities[i] = calculateErrorPartialDerivitive(
-        layersOutputs.get(layersOutputs.size() - 1)[i],
+        calculateActivation(layersOutputs.get(layersOutputs.size() - 1)[i]),
         outputsTarget[i]
       );
       assert(!Double.isNaN(nextLayerSensitivities[i]));
@@ -134,7 +135,7 @@ public class NeuralNetwork {
   }
 
   private double calculateErrorPartialDerivitive(double actual, double target) {
-    return 2 * (actual - target);
+    return 2 * (target - actual);
   }
 
   // Uses sum of squares, but other formulas are possible
@@ -144,7 +145,7 @@ public class NeuralNetwork {
 
     double error = 0;
     for (int i = 0; i < length; i++) {
-      error += Math.pow(outputsActual[i] - outputsTarget[i], 2);
+      error += Math.pow(outputsTarget[i] - outputsActual[i], 2);
     }
 
     return error;
