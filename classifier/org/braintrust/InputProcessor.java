@@ -1,4 +1,4 @@
-// package org.braintrust;
+package org.braintrust;
 
 import java.io.FileReader;
 import java.io.File;
@@ -9,10 +9,6 @@ import org.json.simple.parser.JSONParser;
 public class InputProcessor {
 
     private static JSONParser parser = new JSONParser();
-    
-    public static void main(String[] args) {
-        getGestureData(GestureStore.Gesture.CIRCLE);     
-    }
 
     public static double[] getGestureData(GestureStore.Gesture gesture) {
 

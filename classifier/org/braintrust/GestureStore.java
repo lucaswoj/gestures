@@ -1,4 +1,4 @@
-// package org.braintrust;
+package org.braintrust;
  
 public class GestureStore {
 
@@ -21,7 +21,7 @@ public class GestureStore {
   public final int OUTPUT_NEURONS = 2;
   
   // Returns a tuple of (input[INPUT_NEURONS], {GESTURE_CIRCLE, GESTURE_CIRCLE})
-  Tuple<double[], Integer> getRandom() {
+  public static Tuple<double[], Integer> getRandom() {
     double[] inputs = InputProcessor.getGestureData(Gesture.CIRCLE);
     return new Tuple(inputs, Gesture.CIRCLE.value);
   }
