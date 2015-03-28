@@ -6,3 +6,4 @@ build.xml
 manifest.mf
 *.class
 /dist/
+.DS_Store
