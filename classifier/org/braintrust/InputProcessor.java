@@ -1,4 +1,4 @@
-package org.braintrust;
+// package org.braintrust;
 
 import java.io.FileReader;
 import java.io.File;
@@ -16,7 +16,7 @@ public class InputProcessor {
 
     public static void getGestureData(GestureStore.Gesture gesture) {
 
-        File folder = new File(new File("").getAbsolutePath() + "/training/" + getGestureName(gesture));
+        File folder = new File(new File("").getAbsolutePath() + "/../../../data/training/" + getGestureName(gesture));
         File[] listOfFiles = folder.listFiles();
 
         for (int i = 0; i < listOfFiles.length; i++) {
@@ -56,9 +56,6 @@ public class InputProcessor {
                 }
                 System.out.println("Accelerometer data length: " + accelerometerArray.size());
                 System.out.println("");
-
-
-
             }
         }
     }
