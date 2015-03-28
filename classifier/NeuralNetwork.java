@@ -9,9 +9,7 @@ public class NeuralNetwork {
   // weights randomly initialized.
   public NeuralNetwork(double learningRate, int[] neuronCounts) {
     this.learningRate = learningRate;
-    
     int layerCount = neuronCounts.length;
-
     this.weights = new ArrayList<double[][]>();
 
     // Iterating over layers, skipping the input layer
@@ -25,7 +23,7 @@ public class NeuralNetwork {
       // Iterating over nodes in this layer
       for (int j = 0; j < layerNeuronCount; j++) {
         for (int k = 0; k < previousLayerNeuronCount; k++) {
-          layerWeights[j][k] = Math.random();
+          layerWeights[j][k] = 0.5;
         }
       }
 
@@ -76,7 +74,7 @@ public class NeuralNetwork {
         previousLayerSensitivities[j] = sensitivity;
 
         for (int i = 0; i < nextLayerNeuronCount; i++) {
-          double weightDelta = learningRate * nextLayerSensitivities[i] * calculateActivation(previousLayerOutputs[j]);
+          double weightDelta = learningRate * sensitivity * calculateActivation(previousLayerOutputs[j]);
           this.weights.get(l)[i][j] += weightDelta;
           assert(!Double.isNaN(this.weights.get(l)[i][j]) && !Double.isInfinite(this.weights.get(l)[i][j]));
         }

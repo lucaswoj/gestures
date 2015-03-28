@@ -6,7 +6,7 @@ public class NeuralNetworkTester {
     
     int TRAINING_SAMPLES = 5000;
     int TESTING_SAMPLES = 50;
-    int TRIALS = 100;
+    int TRIALS = 10;
     double LEARNING_RATE = 0.5;
     
     for (int neurons = NEURONS_MIN; neurons <= NEURONS_MAX; neurons++) {
@@ -46,7 +46,7 @@ public class NeuralNetworkTester {
   }
   
   private static double random() {
-    return Math.random();
+    return Math.random() * 2 - 1;
   }
   
   private static double f(double x1, double x2) {
