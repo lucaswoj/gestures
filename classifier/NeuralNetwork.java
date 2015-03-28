@@ -23,7 +23,7 @@ public class NeuralNetwork {
       // Iterating over nodes in this layer
       for (int j = 0; j < layerNeuronCount; j++) {
         for (int k = 0; k < previousLayerNeuronCount; k++) {
-          layerWeights[j][k] = 0.5;
+          layerWeights[j][k] = Math.random() * 2 - 1;
         }
       }
 
@@ -53,12 +53,12 @@ public class NeuralNetwork {
       assert(!Double.isNaN(nextLayerSensitivities[i]));
     }
 
-    for (int l = this.weights.size() - 1; l >= 0; l--) {
-      int previousLayerNeuronCount = this.weights.get(l)[0].length;
-      int nextLayerNeuronCount = this.weights.get(l).length;
+    for (int weightsIndex = this.weights.size() - 1; weightsIndex >= 0; weightsIndex--) {
+      int previousLayerNeuronCount = this.weights.get(weightsIndex)[0].length;
+      int nextLayerNeuronCount = this.weights.get(weightsIndex).length;
       assert(nextLayerSensitivities.length == nextLayerNeuronCount);
 
-      double[] previousLayerOutputs = layersOutputs.get(l);
+      double[] previousLayerOutputs = layersOutputs.get(weightsIndex);
       double[] previousLayerSensitivities = new double[previousLayerNeuronCount];
 
       // Iterate over neurons in the previous layer
@@ -67,16 +67,16 @@ public class NeuralNetwork {
         // Calculate the sensitivity of this node
         double sensitivity = 0;
         for (int i = 0; i < nextLayerNeuronCount; i++) {
-          sensitivity += nextLayerSensitivities[i] * this.weights.get(l)[i][j];
+          sensitivity += nextLayerSensitivities[i] * this.weights.get(weightsIndex)[i][j];
         }
         sensitivity *= calculateActivationDerivitive(previousLayerOutputs[j]);
         assert(!Double.isNaN(sensitivity));
         previousLayerSensitivities[j] = sensitivity;
 
         for (int i = 0; i < nextLayerNeuronCount; i++) {
-          double weightDelta = learningRate * sensitivity * calculateActivation(previousLayerOutputs[j]);
-          this.weights.get(l)[i][j] += weightDelta;
-          assert(!Double.isNaN(this.weights.get(l)[i][j]) && !Double.isInfinite(this.weights.get(l)[i][j]));
+          double weightDelta = learningRate * nextLayerSensitivities[i] * calculateActivation(previousLayerOutputs[j]);
+          this.weights.get(weightsIndex)[i][j] += weightDelta;
+          assert(!Double.isNaN(this.weights.get(weightsIndex)[i][j]) && !Double.isInfinite(this.weights.get(weightsIndex)[i][j]));
         }
       }
 
