@@ -6,10 +6,10 @@ import java.util.Comparator;
 public class NeuralNetworkOptimizer {
   
   private static final int LAYERS_MIN = 0;
-  private static final int LAYERS_MAX = 5;
+  private static final int LAYERS_MAX = 2;
   
   private static final int LAYER_NEURONS_MIN = 1;
-  private static final int LAYER_NEURONS_MAX = 100;
+  private static final int LAYER_NEURONS_MAX = 25;
   
   private static final double LEARNING_RATE_MIN = 0.1;
   private static final double LEARNING_RATE_MAX = 1;
@@ -21,14 +21,19 @@ public class NeuralNetworkOptimizer {
   
   private static final double MUTATION_RATE = 0.1;
   
-  public static void main(String[] args) {
-    System.out.println("TEST");
-    
+  static final int FITNESS_TRIALS = 50;
+  static final int FITNESS_TRAINING_SAMPLES = 5000;
+  static final int FITNESS_TESTING_SAMPLES = 50;
+  
+  static final int POPULATIONS = 10;
+  
+  public static void main(String[] args) {    
     Population p = Population.random();
-    Population p1 = p.next();
-    Population p2 = p1.next();
-    Population p3 = p2.next();
-    Population p4 = p3.next();
+    for (int i = 0; i < 10; i++) {
+      Tuple <Individual, Double> fittest = p.getFittest();
+      System.out.println("The fittest individual in generation " + i + " is " + fittest.x + " with a fitness of " + fittest.y);
+      p = p.next();
+    }
   }
   
   public static double[] getTargetOutput(double[] input) {
@@ -40,109 +45,28 @@ public class NeuralNetworkOptimizer {
   }
 
   public static double calculateFitness(Individual individual) {
-    final int TRIALS = 50;
-    final int TRAINING_SAMPLES = 5000;
-    final int TESTING_SAMPLES = 50;
+    double errorSum = 0;
 
-    double error = 0;
-
-    for (int i = 0; i < TRIALS; i++) {
+    for (int i = 0; i < FITNESS_TRIALS; i++) {
       NeuralNetwork n = new NeuralNetwork(individual.learningRate, individual.neurons);
 
-      for (int j = 0; j < TRAINING_SAMPLES; j++) {
+      for (int j = 0; j < FITNESS_TRAINING_SAMPLES; j++) {
         double[] input = getRandomInput();
         double[] outputTarget = getTargetOutput(input);
         n.train(input, outputTarget);
       }
 
-      for (int j = 0; j < TESTING_SAMPLES; j++) {
+      for (int j = 0; j < FITNESS_TESTING_SAMPLES; j++) {
         double[] input = getRandomInput();
         double[] outputTarget = getTargetOutput(input);
         double[] outputActual = n.classify(input);
-        error += calculateError(outputTarget, outputActual);
+        errorSum += Utilities.calculateError(outputTarget, outputActual);
       }
     }
     
-    return error / TESTING_SAMPLES / TRIALS;
+    return 1 / errorSum;
   }
-  
-   private static double calculateError(double[] outputsActual, double[] outputsTarget) {
-    assert(outputsActual.length == outputsTarget.length);
-    int length = outputsActual.length;
-
-    double error = 0;
-
-    for (int i = 0; i < length; i++) {
-      error += Math.pow(outputsTarget[i] - outputsActual[i], 2);
-    }
-
-    return 0.5 * error;
-  }
-
-  private static class Population {
-
-    public static Population random() {
-      Individual[] individuals = new Individual[POPULATION_SIZE];
-      for (int i = 0; i < POPULATION_SIZE; i++) {
-        individuals[i] = Individual.random();
-      }
-      return new Population(individuals);
-    }
-    
-    private final Individual[] individuals;
-    
-    Population(Individual[] individuals) {
-      this.individuals = individuals;
-    }
-    
-    Population next() {
-      Individual[] individualsNew = new Individual[POPULATION_SIZE];
-      Individual[] individualsOld = this.individuals;
-      
-      double[] individualsOldFitness = new double[POPULATION_SIZE];
-      double individualsOldFitnessSum = 0;
-      for (int i = 0; i < POPULATION_SIZE; i++) {
-        individualsOldFitness[i] = calculateFitness(individualsOld[i]);
-        individualsOldFitnessSum += individualsOldFitness[i];
-      }
-      
-      for (int i = 0; i < POPULATION_SIZE; i++) {
-        
-        double individualASeed = Math.random() * individualsOldFitnessSum;
-        Individual individualA;
-        
-        double individualBSeed = Math.random() * individualsOldFitnessSum;
-        Individual individualB;
-        
-        for (int j = 0; j < POPULATION_SIZE; j++) {
-          individualASeed -= individualsOldFitness[j];
-          if (individualASeed <= 0) {
-            individualA = individualsOld[j];
-            break;
-          }
-        }
-        
-        for (int j = 0; j < POPULATION_SIZE; j++) {
-          individualBSeed -= individualsOldFitness[j];
-          if (individualBSeed <= 0) {
-            individualB = individualsOld[j];
-            break;
-          }
-        }
-        
-        Individual individual = Individual.combine(individualA, individualB);
-        
-        if (Math.random() < MUTATION_RATE) {
-          individual = individual.mutate();
-        }
-        
-        individualsNew[i] = individual;
-      }
-
-      return new Population(individualsNew);
-    }
-  }
-
+   
   private static class Individual {
 
     public static Individual combine(Individual a, Individual b) {
@@ -150,8 +74,8 @@ public class NeuralNetworkOptimizer {
 
       // Crossover neurons
       if (type == 1) {
-        int aLayer = (int) ((a.neurons.length) * Math.random());
-        int bLayer = (int) ((b.neurons.length) * Math.random());
+        int aLayer = (int) ((a.neurons.length - 1) * Math.random()) + 1;
+        int bLayer = (int) ((b.neurons.length - 1) * Math.random());
 
         int[] neurons = new int[aLayer + b.neurons.length - bLayer];
         for (int i = 0; i < neurons.length; i++) {
@@ -181,7 +105,7 @@ public class NeuralNetworkOptimizer {
         neurons[i] = (int) (Math.random() * (LAYER_NEURONS_MAX - LAYER_NEURONS_MIN) + LAYER_NEURONS_MIN);
       }
 
-      int learningRate = (int) (Math.random() * (LEARNING_RATE_MAX - LEARNING_RATE_MIN) + LEARNING_RATE_MIN);
+      double learningRate = (Math.random() * (LEARNING_RATE_MAX - LEARNING_RATE_MIN) + LEARNING_RATE_MIN);
 
       return new Individual(neurons, learningRate);
     }
@@ -192,7 +116,7 @@ public class NeuralNetworkOptimizer {
       // Add Layer
       if (type == 1) {
         int[] neurons = new int[this.neurons.length + 1];
-        int layer = (int) ((neurons.length + 1 - 2) * Math.random() + 1);
+        int layer = (int) ((neurons.length - 2) * Math.random() + 1);
         int j = 0;
         for (int i = 0; i < this.neurons.length + 1; i++) {
           if (i != layer) {
@@ -205,6 +129,8 @@ public class NeuralNetworkOptimizer {
 
       // Remove Layer
       } else if (type == 2) {
+        if (neurons.length == 2) return this;
+        
         int[] neurons = new int[this.neurons.length - 1];
         int layer = (int) ((neurons.length - 2) * Math.random()) + 1;
         int j = 0;
@@ -226,7 +152,7 @@ public class NeuralNetworkOptimizer {
 
       // Change learning rate
       } else {
-        double learningRate = this.learningRate + this.learningRate * (Math.random() - 0.5);
+        double learningRate = Math.min(Math.max(this.learningRate + this.learningRate * (Math.random() - 0.5), LEARNING_RATE_MIN), LEARNING_RATE_MAX);
         return new Individual(this.neurons, learningRate);
       }
     }
@@ -241,6 +167,78 @@ public class NeuralNetworkOptimizer {
       assert(this.neurons[0] == INPUT_NEURONS);
       assert(this.neurons[this.neurons.length - 1] == OUTPUT_NEURONS);
     }
+    
+    @Override
+    public String toString() {
+      return "(Learning Rate = " + this.learningRate + ", Neurons = " + Arrays.toString(this.neurons) + ")";
+    }
+  }
 
+  private static class Population {
+
+    public static Population random() {
+      Individual[] individuals = new Individual[POPULATION_SIZE];
+      for (int i = 0; i < POPULATION_SIZE; i++) {
+        individuals[i] = Individual.random();
+      }
+      return new Population(individuals);
+    }
+    
+    private final Individual[] individuals;
+    
+    private final double[] fitnesses;
+    private final double fitnessesSum;
+    private final int fitnessesMaxIndex;
+    
+    Population(Individual[] individuals) {
+      this.individuals = individuals;
+      this.fitnesses = new double[individuals.length];
+      
+      double fitnessesSum = 0;
+      double fitnessesMax = 0;
+      int fitnessesMaxIndex = -1;
+      
+      for (int i = 0; i < POPULATION_SIZE; i++) {
+        double fitness = calculateFitness(this.individuals[i]);
+        fitnesses[i] = fitness;
+        fitnessesSum += fitness;
+        if (fitness > fitnessesMax) {
+          fitnessesMax = fitness;
+          fitnessesMaxIndex = i;
+        }
+      }
+      
+      assert(fitnessesMaxIndex != -1);
+      
+      this.fitnessesSum = fitnessesSum;
+      this.fitnessesMaxIndex = fitnessesMaxIndex; 
+    }
+        
+    public Tuple<Individual, Double> getFittest() {
+      return new Tuple(
+        individuals[fitnessesMaxIndex],
+        fitnesses[fitnessesMaxIndex]
+      );
+    }
+    
+    Population next() {
+      Individual[] individualsNew = new Individual[POPULATION_SIZE];
+      individualsNew[0] = getFittest().x;
+            
+      for (int i = 1; i < POPULATION_SIZE; i++) {
+        Individual individualA = Utilities.roulette(fitnesses, fitnessesSum, individuals);
+        Individual individualB = Utilities.roulette(fitnesses, fitnessesSum, individuals);
+        
+        Individual individual = Individual.combine(individualA, individualB);
+        
+        if (Math.random() < MUTATION_RATE) {
+          individual = individual.mutate();
+        }
+        
+        individualsNew[i] = individual;
+      }
+
+      return new Population(individualsNew);
+    }
   }
 }

@@ -36,6 +36,7 @@ public class NeuralNetwork {
   public NeuralNetwork(double learningRate, ArrayList<double[][]> weights) {
     this.learningRate = learningRate;
     this.weights = weights;
+    assert(this.weights.size() >= 2);
   }
 
   // Returns the error after updating weights
@@ -140,21 +141,12 @@ public class NeuralNetwork {
   }
 
   private double calculateErrorPartialDerivitive(double actual, double target) {
-    return (target - actual);
+    return Utilities.calculateErrorPartialDerivitive(actual, target);
   }
 
   // Uses sum of squares, but other formulas are possible
   private double calculateError(double[] outputsActual, double[] outputsTarget) {
-    assert(outputsActual.length == outputsTarget.length);
-    int length = outputsActual.length;
-
-    double error = 0;
-
-    for (int i = 0; i < length; i++) {
-      error += Math.pow(outputsTarget[i] - outputsActual[i], 2);
-    }
-
-    return 0.5 * error;
+    return Utilities.calculateError(outputsActual, outputsTarget);
   }
 
 }
