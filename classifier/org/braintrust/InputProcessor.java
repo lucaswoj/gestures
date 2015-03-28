@@ -10,43 +10,63 @@ public class InputProcessor {
 
     private static JSONParser parser = new JSONParser();
     
-    public double[] getRandomGestureData(GestureStore.Gesture gesture) {
+    public double[] getRandomTestData(GestureStore.Gesture gesture) {
         String currentDirectory = new File("").getAbsolutePath();
-        File folder = new File(currentDirectory + "/data/training/" + getGestureName(gesture));
-        
+        File folder = new File(currentDirectory + "/data/test/" + getGestureName(gesture));
         File[] listOfFiles = getDataFiles(folder.listFiles());
         
+        String filePath = pickRandomDataFile(listOfFiles, folder);
+        JSONObject jsonData = parseJSONFile(filePath);
+        
+        // JSONArray orientationArray = (JSONArray)jsonData.get("orientation");
+        // JSONArray gyroArray = (JSONArray)jsonData.get("gyroscope");
+        // JSONArray rotationArray = (JSONArray)jsonData.get("rotation");
+        
+        JSONArray accelerometerArray = (JSONArray)jsonData.get("acc");
+        trimDataArray(450, accelerometerArray);
+        
+        return extractValues(accelerometerArray);
+    }
+    
+    public double[] getRandomTrainingData(GestureStore.Gesture gesture) {
+        String currentDirectory = new File("").getAbsolutePath();
+        File folder = new File(currentDirectory + "/data/training/" + getGestureName(gesture));
+        File[] listOfFiles = getDataFiles(folder.listFiles());
+        
+        String filePath = pickRandomDataFile(listOfFiles, folder);
+        JSONObject jsonData = parseJSONFile(filePath);
+        
+        // JSONArray orientationArray = (JSONArray)jsonData.get("orientation");
+        // JSONArray gyroArray = (JSONArray)jsonData.get("gyroscope");
+        // JSONArray rotationArray = (JSONArray)jsonData.get("rotation");
+
+        JSONArray accelerometerArray = (JSONArray)jsonData.get("acc");
+        trimDataArray(450, accelerometerArray);
+
+        System.out.println("Accelerometer data length: " + accelerometerArray.size());
+        System.out.println("Accelerometer data extracted: " + extractValues(accelerometerArray).length);
+        System.out.println("");
+
+        return extractValues(accelerometerArray);
+    }
+    
+    private String pickRandomDataFile(File[] listOfFiles, File folder) {
         int randomFileIndex = (int)Math.round(Math.random() * (listOfFiles.length-1));
         File file = listOfFiles[randomFileIndex];
         String filename = file.getName();
-        System.out.println("File picked: " + file.getName());
-        if (!filename.equals(".DS_Store")) {
-            Object object = null; 
-            String filePath = folder + "/" + filename;
-            try {
-                object = parser.parse(new FileReader(filePath));
-            } catch(Exception e) {
-                System.out.println(e);
-                System.exit(1);
-            }
-
-            JSONObject jsonData = (JSONObject)object;
-
-            // JSONArray orientationArray = (JSONArray)jsonData.get("orientation");
-            // JSONArray gyroArray = (JSONArray)jsonData.get("gyroscope");
-            // JSONArray rotationArray = (JSONArray)jsonData.get("rotation");
-
-            JSONArray accelerometerArray = (JSONArray)jsonData.get("acc");
-            trimDataArray(450, accelerometerArray);
-
-            System.out.println("Accelerometer data length: " + accelerometerArray.size());
-            System.out.println("Accelerometer data extracted: " + extractValues(accelerometerArray).length);
-
-            System.out.println("");
-
-            return extractValues(accelerometerArray);
+        return folder + "/" + filename;
+    }
+    
+    private JSONObject parseJSONFile(String filePath) {
+        Object object = null; 
+        try {
+            object = parser.parse(new FileReader(filePath));
+        } catch(Exception e) {
+            System.out.println(e);
+            System.exit(1);
         }
-        return null;
+
+        return (JSONObject)object;
     }
     
     private void trimDataArray(int trimTo, JSONArray dataArray) {
