@@ -3,6 +3,8 @@ import java.util.ArrayList;
 
 public class NeuralNetwork {
 
+  static final double LEARNING_RATE = 0.5;
+
   // Create a new NeuralNetwork with some number of layers, all
   // weights randomly initialized.
   public NeuralNetwork(int[] neuronCounts) {
@@ -17,14 +19,14 @@ public class NeuralNetwork {
 
       // This effectively sets index i
       double[][] layerWeights = new double[layerNeuronCount][previousLayerNeuronCount];
-      
+
       // Iterating over nodes in this layer
       for (int j = 0; j < layerNeuronCount; j++) {
         for (int k = 0; k < previousLayerNeuronCount; k++) {
           layerWeights[j][k] = Math.random();
         }
       }
-      
+
       this.weights.add(layerWeights);
     }
   }
@@ -37,27 +39,25 @@ public class NeuralNetwork {
   public void train(double[] inputs, double[] outputsTarget) {
     ArrayList<double[]> layersOutputs = new ArrayList<double[]>();
     classify(inputs, layersOutputs);
-    
+
     // Calculate sensitivities for the output nodes
     int outputNeuronCount = this.weights.get(this.weights.size() - 1).length;
     double[] nextLayerSensitivities = new double[outputNeuronCount];
     assert(layersOutputs.get(layersOutputs.size() - 1).length == outputNeuronCount);
     for (int i = 0; i < outputNeuronCount; i++) {
       nextLayerSensitivities[i] = calculateErrorPartialDerivitive(
-        calculateActivation(layersOutputs.get(layersOutputs.size() - 1)[i]),
+        layersOutputs.get(layersOutputs.size() - 1)[i],
         outputsTarget[i]
-      );
+      ) * calculateActivationDerivitive(layersOutputs.get(layersOutputs.size() - 1)[i]);
       assert(!Double.isNaN(nextLayerSensitivities[i]));
     }
 
-    for (int i = this.weights.size() - 1; i >= 0; i--) {
-      double[][] weights = this.weights.get(i);
-      
-      int previousLayerNeuronCount = weights[0].length;
-      int nextLayerNeuronCount = weights.length;
+    for (int l = this.weights.size() - 1; l >= 0; l--) {
+      int previousLayerNeuronCount = this.weights.get(l)[0].length;
+      int nextLayerNeuronCount = this.weights.get(l).length;
       assert(nextLayerSensitivities.length == nextLayerNeuronCount);
 
-      double[] previousLayerOutputs = layersOutputs.get(i);
+      double[] previousLayerOutputs = layersOutputs.get(l);
       double[] previousLayerSensitivities = new double[previousLayerNeuronCount];
 
       // Iterate over neurons in the previous layer
@@ -65,16 +65,17 @@ public class NeuralNetwork {
 
         // Calculate the sensitivity of this node
         double sensitivity = 0;
-        for (int k = 0; k < nextLayerNeuronCount; k++) {
-          sensitivity += nextLayerSensitivities[k] * weights[k][j];
+        for (int i = 0; i < nextLayerNeuronCount; i++) {
+          sensitivity += nextLayerSensitivities[i] * this.weights.get(l)[i][j];
         }
         sensitivity *= calculateActivationDerivitive(previousLayerOutputs[j]);
         assert(!Double.isNaN(sensitivity));
         previousLayerSensitivities[j] = sensitivity;
 
-        for (int k = 0; k < nextLayerNeuronCount; k++) {
-          weights[k][j] += sensitivity * calculateActivation(previousLayerOutputs[j]);
-          assert(!Double.isNaN(weights[k][j]) && !Double.isInfinite(weights[k][j]));
+        for (int i = 0; i < nextLayerNeuronCount; i++) {
+          double weightDelta = LEARNING_RATE * nextLayerSensitivities[i] * calculateActivation(previousLayerOutputs[j]);
+          this.weights.get(l)[i][j] += weightDelta;
+          assert(!Double.isNaN(this.weights.get(l)[i][j]) && !Double.isInfinite(this.weights.get(l)[i][j]));
         }
       }
 
@@ -83,15 +84,16 @@ public class NeuralNetwork {
   }
 
   public double[] classify(double[] inputs) {
-    return classify(inputs, null);
+    ArrayList<double[]> layersOutputsUnactivated = new ArrayList<double[]>();
+    return classify(inputs, layersOutputsUnactivated);
   }
 
   public double[] classify(double[] inputs, ArrayList<double[]> layersOutputsUnactivated) {
-    assert(layersOutputsUnactivated == null || layersOutputsUnactivated.isEmpty());
+    assert(layersOutputsUnactivated.isEmpty());
     assert(inputs.length == this.weights.get(0)[0].length);
-    
-    if (layersOutputsUnactivated != null) layersOutputsUnactivated.add(inputs);
-    
+
+    layersOutputsUnactivated.add(inputs);
+
     int layerCount = this.weights.size();
 
     for (int i = 0; i < layerCount; i++) {
@@ -116,11 +118,11 @@ public class NeuralNetwork {
         outputs[j] = calculateActivation(output);
       }
 
-      if (layersOutputsUnactivated != null) layersOutputsUnactivated.add(outputsUnactivated);
+      layersOutputsUnactivated.add(outputsUnactivated);
       inputs = outputs;
     }
 
-    return inputs;
+    return layersOutputsUnactivated.get(layersOutputsUnactivated.size() - 1);
   }
 
   // (layers) * (nodes in layer) * (nodes in previous layer)
@@ -135,7 +137,7 @@ public class NeuralNetwork {
   }
 
   private double calculateErrorPartialDerivitive(double actual, double target) {
-    return 2 * (target - actual);
+    return (target - actual);
   }
 
   // Uses sum of squares, but other formulas are possible
@@ -144,11 +146,12 @@ public class NeuralNetwork {
     int length = outputsActual.length;
 
     double error = 0;
+
     for (int i = 0; i < length; i++) {
       error += Math.pow(outputsTarget[i] - outputsActual[i], 2);
     }
 
-    return error;
+    return 0.5 * error;
   }
 
 }
