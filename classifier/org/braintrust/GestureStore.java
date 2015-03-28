@@ -13,6 +13,8 @@ public class GestureStore {
       this.value = value;
     }
   }
+  
+  private InputProcessor inputProcessor = new InputProcessor();
  
   public final int GESTURE_CIRCLE = 0;
   public final int GESTURE_SQUARE = 1;
@@ -21,8 +23,8 @@ public class GestureStore {
   public final int OUTPUT_NEURONS = 2;
   
   // Returns a tuple of (input[INPUT_NEURONS], {GESTURE_CIRCLE, GESTURE_CIRCLE})
-  public static Tuple<double[], Integer> getRandom() {
-    double[] inputs = InputProcessor.getGestureData(Gesture.CIRCLE);
+  public Tuple<double[], Integer> getRandom() {
+    double[] inputs = inputProcessor.getGestureData(Gesture.CIRCLE);
     return new Tuple(inputs, Gesture.CIRCLE.value);
   }
   

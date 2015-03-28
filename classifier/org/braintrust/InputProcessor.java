@@ -10,14 +10,14 @@ public class InputProcessor {
 
     private static JSONParser parser = new JSONParser();
 
-    public static double[] getGestureData(GestureStore.Gesture gesture) {
+    public double[] getGestureData(GestureStore.Gesture gesture) {
 
-        File folder = new File(new File("").getAbsolutePath() + "/../../../data/training/" + getGestureName(gesture));
+        String currentDirectory = new File("").getAbsolutePath();
+        File folder = new File(currentDirectory + "/data/training/" + getGestureName(gesture));
         File[] listOfFiles = folder.listFiles();
 
-        for (int i = 0; i < listOfFiles.length; i++) {
-            String filename = listOfFiles[i].getName();
-
+        for (File listOfFile : listOfFiles) {
+            String filename = listOfFile.getName();
             if (!filename.equals(".DS_Store")) {
                 Object object = null; 
                 String filePath = folder + "/" + filename;
