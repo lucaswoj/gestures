@@ -24,7 +24,7 @@ public class GestureStore {
   
   // Returns a tuple of (input[INPUT_NEURONS], {GESTURE_CIRCLE, GESTURE_CIRCLE})
   public Tuple<double[], Integer> getRandom() {
-    double[] inputs = inputProcessor.getGestureData(Gesture.CIRCLE);
+    double[] inputs = inputProcessor.getRandomGestureData(Gesture.CIRCLE);
     return new Tuple(inputs, Gesture.CIRCLE.value);
   }
   
