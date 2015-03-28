@@ -3,11 +3,13 @@ import java.util.ArrayList;
 
 public class NeuralNetwork {
 
-  static final double LEARNING_RATE = 0.5;
+  final double learningRate;
 
   // Create a new NeuralNetwork with some number of layers, all
   // weights randomly initialized.
-  public NeuralNetwork(int[] neuronCounts) {
+  public NeuralNetwork(double learningRate, int[] neuronCounts) {
+    this.learningRate = learningRate;
+    
     int layerCount = neuronCounts.length;
 
     this.weights = new ArrayList<double[][]>();
@@ -31,7 +33,8 @@ public class NeuralNetwork {
     }
   }
 
-  public NeuralNetwork(ArrayList<double[][]> weights) {
+  public NeuralNetwork(double learningRate, ArrayList<double[][]> weights) {
+    this.learningRate = learningRate;
     this.weights = weights;
   }
 
@@ -73,7 +76,7 @@ public class NeuralNetwork {
         previousLayerSensitivities[j] = sensitivity;
 
         for (int i = 0; i < nextLayerNeuronCount; i++) {
-          double weightDelta = LEARNING_RATE * nextLayerSensitivities[i] * calculateActivation(previousLayerOutputs[j]);
+          double weightDelta = learningRate * nextLayerSensitivities[i] * calculateActivation(previousLayerOutputs[j]);
           this.weights.get(l)[i][j] += weightDelta;
           assert(!Double.isNaN(this.weights.get(l)[i][j]) && !Double.isInfinite(this.weights.get(l)[i][j]));
         }
