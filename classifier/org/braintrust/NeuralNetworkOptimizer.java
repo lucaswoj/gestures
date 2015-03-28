@@ -1,7 +1,13 @@
 package org.braintrust;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class NeuralNetworkOptimizer {
   
@@ -22,10 +28,11 @@ public class NeuralNetworkOptimizer {
   
   private static final double MUTATION_RATE = 0.05;
   
-  static final int FITNESS_TRIALS = 25;
-  static final int FITNESS_TRAINING_SAMPLES = 5000;
+  static final int FITNESS_TRIALS = 1;
+  static final int FITNESS_TRAINING_SAMPLES = 50000;
   static final int FITNESS_TESTING_SAMPLES = 100;
   
+  private static final ExecutorService executor = Executors.newFixedThreadPool(8);
   
   public static void main(String[] args) {    
     Population p = Population.random();
@@ -68,6 +75,7 @@ public class NeuralNetworkOptimizer {
     
     return 1 / errorSum;
   }
+  
    
   private static class Individual {
 
@@ -196,24 +204,38 @@ public class NeuralNetworkOptimizer {
       this.individuals = individuals;
       this.fitnesses = new double[individuals.length];
       
+      ArrayList<Future<Double>> fitnessFutures = new ArrayList<Future<Double>>(POPULATION_SIZE);
+      
+      for (int i = 0; i < POPULATION_SIZE; i++) {
+        final Individual individual = individuals[i];
+        fitnessFutures.add(executor.submit(() -> {return calculateFitness(individual);}));
+      }
+      
       double fitnessesSum = 0;
       double fitnessesMax = 0;
       int fitnessesMaxIndex = -1;
       
       for (int i = 0; i < POPULATION_SIZE; i++) {
-        double fitness = calculateFitness(this.individuals[i]);
-        fitnesses[i] = fitness;
-        fitnessesSum += fitness;
-        if (fitness > fitnessesMax) {
-          fitnessesMax = fitness;
-          fitnessesMaxIndex = i;
+        final Individual individual = individuals[i];
+        double fitness;
+        
+        try {
+          fitness = fitnessFutures.get(i).get();
+          fitnesses[i] = fitness;
+          fitnessesSum += fitness;
+          if (fitness > fitnessesMax) {
+            fitnessesMax = fitness;
+            fitnessesMaxIndex = i;
+          }
+        } catch (InterruptedException | ExecutionException ex) {
+          Logger.getLogger(NeuralNetworkOptimizer.class.getName()).log(Level.SEVERE, null, ex);
         }
       }
       
       assert(fitnessesMaxIndex != -1);
-      
       this.fitnessesSum = fitnessesSum;
-      this.fitnessesMaxIndex = fitnessesMaxIndex; 
+      this.fitnessesMaxIndex = fitnessesMaxIndex;
+      
     }
         
     public Tuple<Individual, Double> getFittest() {
