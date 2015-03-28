@@ -14,7 +14,7 @@ public class InputProcessor {
         getGestureData(GestureStore.Gesture.CIRCLE);     
     }
 
-    public static void getGestureData(GestureStore.Gesture gesture) {
+    public static double[] getGestureData(GestureStore.Gesture gesture) {
 
         File folder = new File(new File("").getAbsolutePath() + "/../../../data/training/" + getGestureName(gesture));
         File[] listOfFiles = folder.listFiles();
@@ -39,12 +39,6 @@ public class InputProcessor {
                 JSONArray accelerometerArray = (JSONArray)jsonData.get("acc");
                 // JSONArray rotationArray = (JSONArray)jsonData.get("rotation");
 
-                // System.out.println("Stats on " + filename);
-                // System.out.println("Orientation data length: " + orientationArray.size());
-                // System.out.println("Gyro data length: " + gyroArray.size());
-                // System.out.println("Accelerometer data length: " + accelerometerArray.size());
-                // System.out.println("Rotation data length: " + rotationArray.size());
-
                 boolean removeFromFront = true;
                 while (accelerometerArray.size() > 450) {
                     if (removeFromFront) {
@@ -55,9 +49,24 @@ public class InputProcessor {
                     removeFromFront = !removeFromFront;
                 }
                 System.out.println("Accelerometer data length: " + accelerometerArray.size());
+                System.out.println("Accelerometer data X: " + getXValues(accelerometerArray).length);
+
                 System.out.println("");
+
+                return getXValues(accelerometerArray);
             }
         }
+        return null;
+    }
+
+    public static double[] getXValues(JSONArray dataArray) {
+        double[] values = new double[dataArray.size()];
+
+        for (int i = 0; i < dataArray.size(); i++) {
+            values[i] = (double)((JSONObject)(dataArray.get(i))).get("x");
+        }
+
+        return values;
     }
 
     public static String getGestureName(GestureStore.Gesture gesture) {
