@@ -6,26 +6,26 @@ import java.util.Comparator;
 public class NeuralNetworkOptimizer {
   
   private static final int LAYERS_MIN = 0;
-  private static final int LAYERS_MAX = 2;
+  private static final int LAYERS_MAX = 3;
   
   private static final int LAYER_NEURONS_MIN = 1;
-  private static final int LAYER_NEURONS_MAX = 25;
+  private static final int LAYER_NEURONS_MAX = 30;
   
   private static final double LEARNING_RATE_MIN = 0.1;
   private static final double LEARNING_RATE_MAX = 1;
   
-  private static final int POPULATION_SIZE = 10;
+  static final int POPULATIONS = 100;
+  private static final int POPULATION_SIZE = 25;
   
-  private static final int INPUT_NEURONS = 1;
+  private static final int INPUT_NEURONS = 2;
   private static final int OUTPUT_NEURONS = 1;
   
-  private static final double MUTATION_RATE = 0.1;
+  private static final double MUTATION_RATE = 0.05;
   
-  static final int FITNESS_TRIALS = 50;
+  static final int FITNESS_TRIALS = 25;
   static final int FITNESS_TRAINING_SAMPLES = 5000;
-  static final int FITNESS_TESTING_SAMPLES = 50;
+  static final int FITNESS_TESTING_SAMPLES = 100;
   
-  static final int POPULATIONS = 10;
   
   public static void main(String[] args) {    
     Population p = Population.random();
@@ -36,12 +36,10 @@ public class NeuralNetworkOptimizer {
     }
   }
   
-  public static double[] getTargetOutput(double[] input) {
-    return new double[]{ Math.sin(input[0]) };
-  }
-
-  public static double[] getRandomInput() {
-    return new double[]{ Math.random() };
+  public static Tuple<double[], double[]> getRandom() {
+    double[] input = new double[]{ Math.random() * 2 - 1, Math.random() * 2 - 1 };
+    double[] output = new double[]{ Math.sin(input[0]) * Math.cos(input[1]) };
+    return new Tuple(input, output);
   }
 
   public static double calculateFitness(Individual individual) {
@@ -51,15 +49,19 @@ public class NeuralNetworkOptimizer {
       NeuralNetwork n = new NeuralNetwork(individual.learningRate, individual.neurons);
 
       for (int j = 0; j < FITNESS_TRAINING_SAMPLES; j++) {
-        double[] input = getRandomInput();
-        double[] outputTarget = getTargetOutput(input);
+        Tuple<double[], double[]> r = getRandom();
+        double[] input = r.x;
+        double[] outputTarget = r.y;
+        
         n.train(input, outputTarget);
       }
 
       for (int j = 0; j < FITNESS_TESTING_SAMPLES; j++) {
-        double[] input = getRandomInput();
-        double[] outputTarget = getTargetOutput(input);
+        Tuple<double[], double[]> r = getRandom();
+        double[] input = r.x;
+        double[] outputTarget = r.y;
         double[] outputActual = n.classify(input);
+        
         errorSum += Utilities.calculateError(outputTarget, outputActual);
       }
     }
