@@ -12,7 +12,7 @@ public class InputProcessor {
     
     public double[] getRandomTestData(GestureStore.Gesture gesture) {
         String currentDirectory = new File("").getAbsolutePath();
-        File folder = new File(currentDirectory + "/data/test/" + getGestureName(gesture));
+        File folder = new File(currentDirectory + "/data/test/" + gesture.getName());
         File[] listOfFiles = getDataFiles(folder.listFiles());
         
         String filePath = pickRandomDataFile(listOfFiles, folder);
@@ -30,7 +30,7 @@ public class InputProcessor {
     
     public double[] getRandomTrainingData(GestureStore.Gesture gesture) {
         String currentDirectory = new File("").getAbsolutePath();
-        File folder = new File(currentDirectory + "/data/training/" + getGestureName(gesture));
+        File folder = new File(currentDirectory + "/data/training/" + gesture.getName());
         File[] listOfFiles = getDataFiles(folder.listFiles());
         
         String filePath = pickRandomDataFile(listOfFiles, folder);
@@ -82,9 +82,19 @@ public class InputProcessor {
     } 
     
     private File[] getDataFiles(File[] files) {
-        File[] dataFiles = new File[files.length-1];
-        int index = 0;
+        File[] dataFiles = null;
+        for (File f : files) {
+            if (f.getName().equals(".DS_Store")) {
+                dataFiles = new File[files.length-1];
+                break;
+            }
+        }
         
+        dataFiles = dataFiles == null 
+                ? new File[files.length] 
+                : dataFiles;
+        
+        int index = 0;
         for (File f : files) {
             if (!f.getName().equals(".DS_Store")) {
                 dataFiles[index] = f;

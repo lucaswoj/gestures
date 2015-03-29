@@ -4,7 +4,13 @@ public class GestureStore {
 
   public static enum Gesture {
     CIRCLE(0, "circle"),
-    TRIANGLE(1, "triangle");
+    TRIANGLE(1, "triangle"),
+    FLICK_OUT(2, "flickOut"),
+    FLICK_IN(3, "flickIn"),
+    FLICK_FORWARD(4, "flickForward"),
+    FLICK_BACKWARD(5, "flickBackward")
+    ;
+    
 
     private final int value;
     private final String name;
