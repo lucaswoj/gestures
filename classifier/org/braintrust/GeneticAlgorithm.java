@@ -8,9 +8,11 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GeneticAlgorithmOptimizer {
+public class GeneticAlgorithm {
   
-  private static final ExecutorService executor = Executors.newFixedThreadPool(8);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(7);
+    // private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+
 
   static interface Factory<T> {
     T random();
@@ -32,6 +34,9 @@ public class GeneticAlgorithmOptimizer {
       double fittestFitness = fitnesses.get(fittestIndex);
       double fitnessesSum = Utilities.sum(fitnesses);
       
+      for (int i = 0; i < individuals.size(); i++) {
+        System.out.println(individuals.get(i) + " -> " + fitnesses.get(i));
+      }
       System.out.println("Fittest individual for gen " + generation + " is " + fittestIndividual + " with a fitness of " + fittestFitness);
       
       // Build the next generation
@@ -40,7 +45,11 @@ public class GeneticAlgorithmOptimizer {
       
       while (children.size() < generationSize) {
         T mother = Utilities.roulette(fitnesses, fitnessesSum, individuals);
-        T father = Utilities.roulette(fitnesses, fitnessesSum, individuals);
+        
+        T father = mother;
+        while (father == mother) {
+          father = Utilities.roulette(fitnesses, fitnessesSum, individuals);
+        }
         
         T child = factory.crossover(father, mother);
 
@@ -67,6 +76,7 @@ public class GeneticAlgorithmOptimizer {
   
   private static <T> ArrayList<Double> calculateGenerationFitnesses(Factory<T> factory, ArrayList<T> individuals) {
     ArrayList<Future<Double>> fitnessFutures = new ArrayList<>(individuals.size());
+    ArrayList<Double> fitnesses = new ArrayList<>(individuals.size());
     
     for (final T individual : individuals) {
       fitnessFutures.add(executor.submit(() -> {
@@ -74,14 +84,12 @@ public class GeneticAlgorithmOptimizer {
       }));
     }
     
-    ArrayList<Double> fitnesses = new ArrayList<>(individuals.size());
     for (Future<Double> fitnessFuture : fitnessFutures) {
       try {
         double fitness = fitnessFuture.get();
         fitnesses.add(fitness);
-        System.out.println(fitness);
       } catch (ExecutionException | InterruptedException ex) {
-        Logger.getLogger(GeneticAlgorithmOptimizer.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(GeneticAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
       }
     }
     

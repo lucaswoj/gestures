@@ -1,46 +1,37 @@
 package org.braintrust;
 
+import java.util.Arrays;
+
 public class NeuralNetworkTester {
 
   public static void main(String[] args) {
 
-    NeuralNetwork n = new NeuralNetwork(0.5, new int[]{2, 10, 100, 10, 1});
+    NeuralNetwork n = new NeuralNetwork(0.5, new int[]{1350, 53, 58, 24, 17, 6});
     
-    int EPOCHS = 10000;
-    int TRAINING_SAMPLES_PER_EPOCH = 10;
-    int TESTING_SAMPLES_PER_EPOCH = 100;
-    
-    for (int epoch = 0; epoch < EPOCHS; epoch++) {
-     
-      // Provide additional training
-      for (int i = 0; i < TRAINING_SAMPLES_PER_EPOCH; i++) {
-        double x = random();
-        double y = random();
-        
-        n.train(new double[]{x, y}, new double[]{f(x, y)});
-      }
-
-      // Measure error
-      double errorSum = 0;
-      for (int i = 0; i < TESTING_SAMPLES_PER_EPOCH; i++) {
-        double x = random();
-        double y = random();
-        
-        double outputActual = n.classify(new double[]{x, y})[0];
-        double outputTarget = f(x, y);
-        
-        errorSum += Math.abs(outputActual - outputTarget);
-      }
-      double variance = errorSum / (double) TESTING_SAMPLES_PER_EPOCH;
-      System.out.println(epoch + " -> " + Math.sqrt(variance));   
+    int TRAINING_SAMPLES = 50000;
+    for (int i = 0; i < TRAINING_SAMPLES; i++) {
+      Gesture gesture = GestureStore.instance.getRandomTrainingGesture();
+      n.train(gesture.input, gesture.targetOutput);
     }
-  }
-  
-  private static double random() {
-    return Math.random() * 2 - 1;
-  }
-  
-  private static double f(double x, double y) {
-    return Math.sin(2 * Math.PI * x) * Math.cos(0.5 * Math.PI* y);
+    
+    int classifyTotal = 0;
+    int classifyError = 0;
+    
+    for (Gesture gesture : GestureStore.instance.getAllTestingGestures()) {
+      double[] outputActual = n.classify(gesture.input);
+      
+      GestureType typeActual = GestureType.fromOutput(outputActual);
+      GestureType typeTarget = gesture.type;
+      
+      classifyTotal++;
+      if (typeActual == typeTarget) {
+        System.out.println("CORRECTLY CLASSIFIED " + typeActual);
+      } else {
+        System.out.println("MISTOOK " + typeTarget + " FOR A " + typeActual);
+        classifyError++;
+      }
+    }
+    
+    System.out.println("\n\nERROR RATE " + classifyError / (double) classifyTotal);
   }
 }

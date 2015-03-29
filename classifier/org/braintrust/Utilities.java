@@ -49,7 +49,23 @@ public class Utilities {
     
     int index = 0;
     for (T value : collection) {
-      if (maxIndex == -1 || (maxValue != null && maxValue.compareTo(value) > 0)) {
+      if (maxIndex == -1 || (maxValue != null && maxValue.compareTo(value) < 0)) {
+        maxIndex = index;
+        maxValue = value;
+      }
+      index++;
+    }
+    
+    return maxIndex;
+  }
+  
+  public static int maxIndex(double[] collection) {
+    int maxIndex = -1;
+    double maxValue = Double.NEGATIVE_INFINITY;
+    
+    int index = 0;
+    for (double value : collection) {
+      if (maxIndex == -1 || maxValue < value) {
         maxIndex = index;
         maxValue = value;
       }

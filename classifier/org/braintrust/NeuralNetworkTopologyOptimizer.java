@@ -2,41 +2,34 @@ package org.braintrust;
 
 import java.util.Arrays;
 
-public class NeuralNetworkOptimizer {
+public class NeuralNetworkTopologyOptimizer {
   
   private static final int LAYERS_MIN = 1;
-  private static final int LAYERS_MAX = 3;
+  private static final int LAYERS_MAX = 8;
   
   private static final int LAYER_NEURONS_MIN = 1;
-  private static final int LAYER_NEURONS_MAX = 1000;
+  private static final int LAYER_NEURONS_MAX = 100;
   
-  private static final double LEARNING_RATE_MIN = 0.4;
+  private static final double LEARNING_RATE_MIN = 0.2;
   private static final double LEARNING_RATE_MAX = 0.9;
   
-  static final int GENERATIONS = 10;
-  private static final int GENERATION_SIZE = 8;
+  static final int GENERATIONS = 100;
+  private static final int GENERATION_SIZE = 7 * 2;
   
   private static final int INPUT_NEURONS = GestureStore.INPUT_NEURONS;
   private static final int OUTPUT_NEURONS = GestureStore.OUTPUT_NEURONS;
   
   private static final double MUTATION_RATE = 0.05;
   
-  static final int FITNESS_TRIALS = 10;
-  static final int FITNESS_TRAINING_SAMPLES = 100;
-  static final int FITNESS_TESTING_SAMPLES = 100;
+  static final int FITNESS_TRIALS = 3;
+  static final int FITNESS_TRAINING_SAMPLES = 50000;
   
-  public static final Factory factory = new Factory();
+  public static final IndividualFactory factory = new IndividualFactory();
     
   public static void main(String[] args) {
-    Individual individual = GeneticAlgorithmOptimizer.optimize(factory, GENERATIONS, GENERATION_SIZE, MUTATION_RATE);    
-  }
-  
-  private static Tuple<double[], double[]> getRandomTraining() {
-    return GestureStore.getRandomTraining();
-  }
-  
-  private static Tuple<double[], double[]> getRandomTesting() {
-    return GestureStore.getRandomTesting();
+    Individual individual = GeneticAlgorithm.optimize(factory, GENERATIONS, GENERATION_SIZE, MUTATION_RATE);
+    
+    return;
   }
   
   private static class Individual {
@@ -58,9 +51,9 @@ public class NeuralNetworkOptimizer {
     }
   }
   
-  private static class Factory implements GeneticAlgorithmOptimizer.Factory<Individual> {
+  private static class IndividualFactory implements GeneticAlgorithm.Factory<Individual> {
     
-    private Factory() {}
+    private IndividualFactory() {}
 
     @Override
     public Individual random() {
@@ -135,17 +128,16 @@ public class NeuralNetworkOptimizer {
         NeuralNetwork n = new NeuralNetwork(individual.learningRate, individual.neurons);
 
         for (int j = 0; j < FITNESS_TRAINING_SAMPLES; j++) {
-          Tuple<double[], double[]> r = getRandomTraining();
-          double[] input = r.x;
-          double[] outputTarget = r.y;
+          Gesture gesture = GestureStore.instance.getRandomTrainingGesture();
+          double[] input = gesture.input;
+          double[] outputTarget = gesture.targetOutput;
 
           n.train(input, outputTarget);
         }
 
-        for (int j = 0; j < FITNESS_TESTING_SAMPLES; j++) {
-          Tuple<double[], double[]> r = getRandomTesting();
-          double[] input = r.x;
-          double[] outputTarget = r.y;
+        for (Gesture gesture : GestureStore.instance.getAllTestingGestures()) {
+          double[] input = gesture.input;
+          double[] outputTarget = gesture.targetOutput;
           double[] outputActual = n.classify(input);
 
           errorSum += Utilities.calculateError(outputTarget, outputActual);
@@ -160,8 +152,8 @@ public class NeuralNetworkOptimizer {
       int type = (int) (Math.random() * 2);
 
       if (type == 1) {
-        int aLayer = (int) ((a.neurons.length - 1) * Math.random()) + 1;
-        int bLayer = (int) ((b.neurons.length - 1) * Math.random());
+        int aLayer = (int) ((a.neurons.length - 2) * Math.random()) + 1;
+        int bLayer = (int) ((b.neurons.length - 2) * Math.random()) + 1;
 
         int[] neurons = new int[aLayer + b.neurons.length - bLayer];
         for (int i = 0; i < neurons.length; i++) {
