@@ -8,7 +8,10 @@ public enum GestureType {
   FLICK_FORWARD(4, "flickForward"),
   FLICK_BACKWARD(5, "flickBackward"),
   CHECK(6, "check"),
-  ARROW(7, "arrow");
+  ARROW(7, "arrow"),
+  PIGTAIL(8, "pigtail"),
+  STAR(9, "star")
+  ;
 
   public final int value;
   public final String name;
