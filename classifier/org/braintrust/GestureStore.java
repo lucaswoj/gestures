@@ -2,15 +2,29 @@ package org.braintrust;
  
 public class GestureStore {
 
-  public static enum Gesture{
-    CIRCLE(0),
-    TRIANGLE(1)
-    ;
+  public static enum Gesture {
+    CIRCLE(0, "circle"),
+    TRIANGLE(1, "triangle");
 
     private final int value;
+    private final String name;
 
-    private Gesture(int value) {
+    private Gesture(int value, String name) {
       this.value = value;
+      this.name = name;
+    }
+    
+    public int getValue() {
+      return this.value;
+    }
+    
+    public String getName() {
+      return this.name;
+    }
+    
+    public static Gesture fromValue(int value) {
+      if (value == 0) return Gesture.CIRCLE;
+      else            return Gesture.TRIANGLE;
     }
   }
   

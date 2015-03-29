@@ -1,5 +1,8 @@
 package org.braintrust;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Utilities {
 
   public static double calculateErrorPartialDerivitive(double actual, double target) {
@@ -20,22 +23,45 @@ public class Utilities {
     return 0.5 * error;
   }
   
-  public static <T> T roulette(double[] probabilities, double probabilitiesSum, T[] values) {
-    assert(values.length == probabilities.length);
+  public static <T> T roulette(ArrayList<Double> probabilities, double probabilitiesSum, ArrayList<T> values) {
+    assert(values.size() == probabilities.size());
     
     double seed = Math.random() * probabilitiesSum;
     
-    int i = 0;
-    for (; seed > 0 && i < values.length; i++) {
-      assert(probabilities[i] > 0);
-      seed -= probabilities[i];
+    for (int i = 0; seed > 0 && i < values.size(); i++) {
+      assert(probabilities.get(i) > 0);
+      seed -= probabilities.get(i);
       
       if (seed <= 0) {
-        return values[i];
+        return values.get(i);
       }
     }
     
     assert(false);
     return null;
+  }
+  
+  public static <T extends Comparable> int maxIndex(Collection<T> collection) {
+    int maxIndex = -1;
+    T maxValue = null;
+    
+    int index = 0;
+    for (T value : collection) {
+      if (maxIndex == -1 || (maxValue != null && maxValue.compareTo(value) > 0)) {
+        maxIndex = index;
+        maxValue = value;
+      }
+      index++;
+    }
+    
+    return maxIndex;
+  }
+  
+  public static double sum(Collection<Double> collection) {
+    double sum = 0;
+    for (double value : collection) {
+      sum += value;
+    }
+    return sum;
   }
 }
