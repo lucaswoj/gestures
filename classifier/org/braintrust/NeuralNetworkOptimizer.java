@@ -1,51 +1,42 @@
 package org.braintrust;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class NeuralNetworkOptimizer {
   
-  private static final int LAYERS_MIN = 0;
+  private static final int LAYERS_MIN = 1;
   private static final int LAYERS_MAX = 3;
   
   private static final int LAYER_NEURONS_MIN = 1;
-  private static final int LAYER_NEURONS_MAX = 30;
+  private static final int LAYER_NEURONS_MAX = 1000;
   
   private static final double LEARNING_RATE_MIN = 0.4;
   private static final double LEARNING_RATE_MAX = 0.9;
   
-  static final int GENERATIONS = 100;
+  static final int GENERATIONS = 10;
   private static final int GENERATION_SIZE = 8;
   
-  private static final int INPUT_NEURONS = 1;
-  private static final int OUTPUT_NEURONS = 1;
+  private static final int INPUT_NEURONS = GestureStore.INPUT_NEURONS;
+  private static final int OUTPUT_NEURONS = GestureStore.OUTPUT_NEURONS;
   
   private static final double MUTATION_RATE = 0.05;
   
   static final int FITNESS_TRIALS = 10;
-  static final int FITNESS_TRAINING_SAMPLES = 50000;
+  static final int FITNESS_TRAINING_SAMPLES = 100;
   static final int FITNESS_TESTING_SAMPLES = 100;
   
   public static final Factory factory = new Factory();
     
   public static void main(String[] args) {
-    Individual individual = GeneticOptimizer.optimize(factory, GENERATIONS, GENERATION_SIZE, MUTATION_RATE);    
+    Individual individual = GeneticAlgorithmOptimizer.optimize(factory, GENERATIONS, GENERATION_SIZE, MUTATION_RATE);    
   }
   
   private static Tuple<double[], double[]> getRandomTraining() {
-    double[] input = new double[]{Math.random()};
-    double[] output = new double[]{Math.sin(input[0])};
-    return new Tuple(input, output);
+    return GestureStore.getRandomTraining();
   }
   
   private static Tuple<double[], double[]> getRandomTesting() {
-    return getRandomTraining();
+    return GestureStore.getRandomTesting();
   }
   
   private static class Individual {
@@ -67,7 +58,7 @@ public class NeuralNetworkOptimizer {
     }
   }
   
-  private static class Factory implements GeneticOptimizer.Factory<Individual> {
+  private static class Factory implements GeneticAlgorithmOptimizer.Factory<Individual> {
     
     private Factory() {}
 
@@ -168,7 +159,6 @@ public class NeuralNetworkOptimizer {
     public Individual crossover(Individual a, Individual b) {
       int type = (int) (Math.random() * 2);
 
-      // Crossover neurons
       if (type == 1) {
         int aLayer = (int) ((a.neurons.length - 1) * Math.random()) + 1;
         int bLayer = (int) ((b.neurons.length - 1) * Math.random());

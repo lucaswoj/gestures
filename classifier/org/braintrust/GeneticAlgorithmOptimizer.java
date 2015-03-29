@@ -1,7 +1,6 @@
 package org.braintrust;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,7 +8,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GeneticOptimizer {
+public class GeneticAlgorithmOptimizer {
   
   private static final ExecutorService executor = Executors.newFixedThreadPool(8);
 
@@ -30,7 +29,10 @@ public class GeneticOptimizer {
       ArrayList<Double> fitnesses = calculateGenerationFitnesses(factory, individuals);
       int fittestIndex = Utilities.maxIndex(fitnesses);
       fittestIndividual = individuals.get(fittestIndex);
+      double fittestFitness = fitnesses.get(fittestIndex);
       double fitnessesSum = Utilities.sum(fitnesses);
+      
+      System.out.println("Fittest individual for gen " + generation + " is " + fittestIndividual + " with a fitness of " + fittestFitness);
       
       // Build the next generation
       ArrayList<T> children = new ArrayList<T>(generationSize);
@@ -75,9 +77,11 @@ public class GeneticOptimizer {
     ArrayList<Double> fitnesses = new ArrayList<>(individuals.size());
     for (Future<Double> fitnessFuture : fitnessFutures) {
       try {
-        fitnesses.add(fitnessFuture.get());
+        double fitness = fitnessFuture.get();
+        fitnesses.add(fitness);
+        System.out.println(fitness);
       } catch (ExecutionException | InterruptedException ex) {
-        Logger.getLogger(GeneticOptimizer.class.getName()).log(Level.SEVERE, null, ex);
+        Logger.getLogger(GeneticAlgorithmOptimizer.class.getName()).log(Level.SEVERE, null, ex);
       }
     }
     

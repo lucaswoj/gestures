@@ -2,6 +2,8 @@ package org.braintrust;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.RandomAccess;
 
 public class Utilities {
 
@@ -63,5 +65,13 @@ public class Utilities {
       sum += value;
     }
     return sum;
+  }
+  
+  public static <T> T random(List<T> list) {
+    return list.get((int) (list.size() * Math.random()));
+  }
+  
+  public static <T> T random(T[] list) {
+    return list[(int) (list.length * Math.random())];
   }
 }
