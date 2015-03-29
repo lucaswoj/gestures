@@ -11,7 +11,7 @@ public class Gesture {
     this.type = type;
     
     this.targetOutput = new double[GestureType.values().length]; 
-    this.targetOutput[type.value] = 1;
+    this.targetOutput[type.ordinal()] = 1;
   } 
 
 } 

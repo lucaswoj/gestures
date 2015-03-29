@@ -41,7 +41,9 @@ public class NeuralNetwork {
 
   // Returns the error after updating weights
   public void train(double[] inputs, double[] outputsTarget) {
-    ArrayList<double[]> layersOutputs = new ArrayList<double[]>();
+    assert(outputsTarget.length == weights.get(weights.size() - 1).length);
+    
+    ArrayList<double[]> layersOutputs = new ArrayList<double[]>();    
     classify(inputs, layersOutputs);
 
     // Calculate sensitivities for the output nodes

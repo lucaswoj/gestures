@@ -17,7 +17,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class GestureStore {
-
+  
   public static enum DataType {
     TRAINING("training"),
     TESTING("test");
@@ -29,16 +29,19 @@ public class GestureStore {
     }
   }
   
-  public static final GestureStore instance = new GestureStore();
   private final JSONParser parser = new JSONParser();
  
   public final Map<DataType, ArrayList<Gesture>> gestures = new EnumMap<>(DataType.class);  
 
+  public static final String[] SENSORS = new String[]{"acc", "rotation"}; // "gyroscope", "orientation" "rotation"
+
   public static final int TRIM_LENGTH = 450;
   
-  public static final int INPUT_NEURONS = 3 * TRIM_LENGTH;
-  public static final int OUTPUT_NEURONS = 6;
+  public static final int INPUT_NEURONS = SENSORS.length * 3 * TRIM_LENGTH;
+  public static final int OUTPUT_NEURONS = GestureType.LENGTH;
   
+  public static final GestureStore instance = new GestureStore();
+    
   private double[] readGestureFile(File file) {
     double[] input = new double[INPUT_NEURONS];
     
@@ -49,17 +52,19 @@ public class GestureStore {
       Logger.getLogger(GestureStore.class.getName()).log(Level.SEVERE, null, ex);
       System.exit(1);
     }
+    
+    for (String sensor : SENSORS) {
+      
+      JSONArray jsonSensor = (JSONArray) json.get(sensor);
+      
+      int start = (jsonSensor.size() - TRIM_LENGTH) / 2;
+      for (int i = 0; i < TRIM_LENGTH; i++) {
+        JSONObject jsonCoordinate = (JSONObject) jsonSensor.get(i + start);
 
-    JSONArray jsonAcceleration = (JSONArray) json.get("acc");
-    // JSONArray dataOrientation = (JSONArray) gestures.get("orientation");
-    // JSONArray dataGyro = (JSONArray) gestures.get("gyroscope");
-    // JSONArray dataRotation = (JSONArray) gestures.get("rotation");
-
-    int start = (jsonAcceleration.size() - TRIM_LENGTH) / 2;
-    for (int i = 0; i < TRIM_LENGTH; i++) {
-      input[i * 3] =     (double) ((JSONObject) jsonAcceleration.get(i + start)).get("x");
-      input[i * 3 + 1] = (double) ((JSONObject) jsonAcceleration.get(i + start)).get("y");
-      input[i * 3 + 2] = (double) ((JSONObject) jsonAcceleration.get(i + start)).get("z");
+        input[i * 3] =     (double) jsonCoordinate.get("x");
+        input[i * 3 + 1] = (double) jsonCoordinate.get("y");
+        input[i * 3 + 2] = (double) jsonCoordinate.get("z");
+      }      
     }
     
     return input;

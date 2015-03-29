@@ -8,10 +8,10 @@ public class NeuralNetworkTopologyOptimizer {
   private static final int LAYERS_MAX = 8;
   
   private static final int LAYER_NEURONS_MIN = 1;
-  private static final int LAYER_NEURONS_MAX = 100;
+  private static final int LAYER_NEURONS_MAX = 200;
   
-  private static final double LEARNING_RATE_MIN = 0.2;
-  private static final double LEARNING_RATE_MAX = 0.9;
+  private static final double LEARNING_RATE_MIN = 0.3;
+  private static final double LEARNING_RATE_MAX = 1;
   
   static final int GENERATIONS = 100;
   private static final int GENERATION_SIZE = 7 * 2;
@@ -22,14 +22,12 @@ public class NeuralNetworkTopologyOptimizer {
   private static final double MUTATION_RATE = 0.05;
   
   static final int FITNESS_TRIALS = 3;
-  static final int FITNESS_TRAINING_SAMPLES = 50000;
+  static final int FITNESS_TRAINING_SAMPLES = 2000;
   
   public static final IndividualFactory factory = new IndividualFactory();
     
   public static void main(String[] args) {
     Individual individual = GeneticAlgorithm.optimize(factory, GENERATIONS, GENERATION_SIZE, MUTATION_RATE);
-    
-    return;
   }
   
   private static class Individual {
