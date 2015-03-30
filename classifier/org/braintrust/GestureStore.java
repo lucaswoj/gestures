@@ -33,12 +33,12 @@ public class GestureStore {
  
   public final Map<DataType, ArrayList<Gesture>> gestures = new EnumMap<>(DataType.class);  
 
-  public static final String[] SENSORS = new String[]{"acc", "rotation"}; // "gyroscope", "orientation" "rotation"
+  public static final String[] SENSORS = new String[]{"acc"}; // "gyroscope", "orientation" "rotation"
 
   public static final int TRIM_LENGTH = 450;
   
   public static final int INPUT_NEURONS = SENSORS.length * 3 * TRIM_LENGTH;
-  public static final int OUTPUT_NEURONS = GestureType.LENGTH;
+  public static final int OUTPUT_NEURONS = GestureType.size();
   
   public static final GestureStore instance = new GestureStore();
     

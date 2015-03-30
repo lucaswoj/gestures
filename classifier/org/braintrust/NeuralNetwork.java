@@ -9,15 +9,15 @@ public class NeuralNetwork {
 
   // Create a new NeuralNetwork with some number of layers, all
   // weights randomly initialized.
-  public NeuralNetwork(double learningRate, int[] neuronCounts) {
+  public NeuralNetwork(double learningRate, int[] topology) {
     this.learningRate = learningRate;
-    int layerCount = neuronCounts.length;
+    int layerCount = topology.length;
     this.weights = new ArrayList<double[][]>();
 
     // Iterating over layers, skipping the input layer
     for (int i = 0; i < layerCount - 1; i++) {
-      int previousLayerNeuronCount = neuronCounts[i];
-      int layerNeuronCount = neuronCounts[i + 1];
+      int previousLayerNeuronCount = topology[i];
+      int layerNeuronCount = topology[i + 1];
 
       // This effectively sets index i
       double[][] layerWeights = new double[layerNeuronCount][previousLayerNeuronCount];
