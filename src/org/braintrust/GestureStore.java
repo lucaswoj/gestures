@@ -20,7 +20,7 @@ public class GestureStore {
   
   public static enum DataType {
     TRAINING("training"),
-    TESTING("test");
+    TESTING("testing");
 
     private final String name;
 

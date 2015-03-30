@@ -24,9 +24,13 @@ public class NeuralNetworkTester {
     
     int classifyTotal = 0;
     int classifyError = 0;
+    int classifyTime = 0;
     
     for (Gesture gesture : GestureStore.instance.getAllTestingGestures()) {
+      long timeStart = System.nanoTime();
       double[] outputActual = n.classify(gesture.input);
+      long timeEnd = System.nanoTime();
+      classifyTime += timeEnd - timeStart;
       
       GestureType typeActual = GestureType.fromOutput(outputActual);
       GestureType typeTarget = gesture.type;
@@ -40,6 +44,9 @@ public class NeuralNetworkTester {
       }
     }
     
-    System.out.println("\n\nERROR RATE " + classifyError / (double) classifyTotal);
+    System.out.println("\n");
+    System.out.println("ERROR RATE " + classifyError / (double) classifyTotal);
+    System.out.println("AVERAGE CLASSIFY TIME (NS) " + classifyTime / (double) classifyTotal);
+    System.out.println("\n");
   }
 }
