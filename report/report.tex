@@ -29,6 +29,7 @@
 Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatches sales are projected to reach 90 million units by 2018 (http://www.businessinsider.com/global-smartwatch-sales-set-to-explode-2014-3). Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods.
 
 \begin{figure}[ht!]
+  \label{smartwatch}
   \centering
   \includegraphics[width=90mm]{smartwatch.png}
   \caption{Smartwatch Annual Sales Projection \label{overflow}}
@@ -52,6 +53,13 @@ It is most often used in the supervised learning process as it requires the expe
 \section{\$1 Recognizer}s
 
 % Theoretical background material with references
+
+\begin{figure}[ht!]
+  \label{gestures}
+  \centering
+  \includegraphics[width=90mm]{gestures}
+  \caption{Gestures supported by the \$1 Recognizer}
+\end{figure}
 
 \chapter{Solution}
 
@@ -80,9 +88,18 @@ In the following subsections, we will discuss the requirements and implementatio
 
 % Which gestures worked and which gestures didn't work?
 
+We decided to use a subset of the gestures defined in the ``\$1 Unistroke Recognizer" paper, as discussed above and pictured in \ref{gestures}. Using this set of gestures was a good solution to our problem because
+\begin{itemize}
+\item they have become the canonical gesture set in the industry, so using them would allow us to directly compare our results to other's
+\item they are well suited, semantically, to act as user input for mobile applications
+\item they are know to be easily recognizable by algorithms
+\item they are easy to draw for users
+\end{itemize}
+
 \section{Data Collection App}
 
 \begin{figure}[ht!]
+  \label{app}
   \centering
   \includegraphics[width=90mm]{app}
   \caption{Screenshot of Android smartwatch sensor data collection app}
