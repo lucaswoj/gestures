@@ -47,12 +47,28 @@ We have acquired a LG G Watch R and a Nexus 5 phone to record gesture data via a
 Our work is inspired by two works in particular. First, there is the famous ``Learning Representations by Back-Propagating Errors" paper that first introduced the back propagation algorithm. Second, there is ``Gestures without Libraries, Toolkits, or Training: A \$1 Recognizer for User Interface Prototypes". The former lays the groundwork for our solution and the latter provided motivation for the problem domain.
 
 \section{Backpropagation}
+Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks. This problem seemed insurmountable in the early years of neural networks because these hidden layers are intentionally designed such that one does not know what feature they will monitor. This led to a thirty year malaise in the use of neural networks until the introduction of the back propagation algorithm in 1986 by Hinton et al.
 
-Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks.
+Backpropagation is composed of two high-level stages:
 
-It is most often used in the supervised learning process as it requires the expected labeling for a set of inputs.  Before the formulation of this algorithm there
+\begin{enumerate}
+\item Propagate the input parameters forward through the network to determine the initial outputs of the network
+\item Propagate the classification error backwards through the network and update the weights connecting the layers.
+\end{enumerate}
 
-\section{\$1 Recognizer}s
+The latter stage is where the name backpropagation originates from. It is composed of the following steps:
+\begin{enumerate}
+\item Calculate the sensitivity of the output layer, $q$, ($q = Q, Q-1, Q-2,...,1$) using the difference between the target and actual outputs and the derivative of the activation function. $\delta_i = \mathit{a'}(\mathit{input_{fromPreviousLayer}})(o_i - t_i)$
+\item Calculate the sensitivity for each node, $i$, of the previous layer, $q-1$: $^{q-1}\delta_i =  \mathit{a'}(\mathit{input_{fromPreviousLayer}}) \cdot  (\sum\limits_{j} {^{q}w_{ij}* ^{q}\delta_j})$
+\item Using the sensitivities, the weights can now be calculated: $\Delta^{q}w_{ij} = ^{q}\delta_i \cdot ^{q-1}y_j$
+\item Repeat steps 1-3 until the input nodes have been reached.
+\item Repeat steps 1-4 for every sample in the training set
+\item Check if the error of the network is lower than the maximum acceptable error: $E < E_{max}$ If it is, then you're done! Otherwise go back to step 1.
+\end{enumerate}
+
+Effectively, this performs gradient descent over the error surface of the problem domain.
+
+\subsection{\$1 Recognizer}
 
 % Theoretical background material with references
 
