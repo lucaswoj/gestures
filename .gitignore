@@ -8,3 +8,7 @@ nbactions.xml
 nb-configuration.xml
 .nb-gradle/
 .DS_Store
+/report/*.out
+/report/*.aux
+/report/*.log
+/report/*.odf

@@ -1,2 +1,3 @@
 report.pdf: report.md
-	md2pdf report.md
+	./tex2pdf report.tex
+
