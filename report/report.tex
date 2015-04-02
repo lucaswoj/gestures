@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{fullpage}
 \usepackage{url}
@@ -7,9 +7,16 @@
 \usepackage{parskip}
 \usepackage{pdfpages}
 
-% TODO create title page
+\title{Smartwatch Gesture Recognition}
+\date{\today}
+\author{
+  Lucas Wojciechowski \& Dane Carr \& Ariel Weingarten \\
+  Group 15
+}
 
 \begin{document}
+
+\maketitle
 
 % The common requirement for all project is that the students in each group need to make use in their design project any method or combination of methods of material taught in the course (or closely related to it) to solve the proposed problem or improve on an existing solution. These are the required deliverables
 % A report of 20 to 25 pages needs to be provided with these sections:
@@ -34,12 +41,13 @@ Hand and arm gestures could be used to augment existing input paradigms. Though 
 We have acquired a LG G Watch R and a Nexus 5 phone to record gesture data via a simple, custom-built Android application. Data collected from the watch's accelerometer will be used to train a neural network to classify a set of simple gestures. We will compare the accuracy and performance of our classifier against similar gesture recognition systems in the research community.
 
 \section{Theoretical Background Material}
-Our work is inspired by two works in particular. First, there is the famous "Learning Representations by Back-Propagating Errors" paper that first introduced the back propagation algorithm. Second, there is "Gestures without Libraries, Toolkits, or Training: A \$1 Recognizer for User Interface Prototypes". The former lays the groundwork for our solution and the latter provided motivation for the problem domain. 
+Our work is inspired by two works in particular. First, there is the famous ``Learning Representations by Back-Propagating Errors" paper that first introduced the back propagation algorithm. Second, there is ``Gestures without Libraries, Toolkits, or Training: A \$1 Recognizer for User Interface Prototypes". The former lays the groundwork for our solution and the latter provided motivation for the problem domain.
 
 \subsection{Backpropagation}
-Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks. 
 
-It is most often used in the supervised learning process as it requires the expected labelling for a set of inputs.  Before the formulation of this algorithm there
+Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks.
+
+It is most often used in the supervised learning process as it requires the expected labeling for a set of inputs.  Before the formulation of this algorithm there
 
 \subsection{\$1 Recognizer}s
 
@@ -73,6 +81,14 @@ In the following subsections, we will discuss the requirements and implementatio
 % Which gestures worked and which gestures didn't work?
 
 \subsection{Data Collection App}
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{app-1}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{app-2}
+\end{figure}
 
 \subsection{Repository of Testing and Training Data}
 
