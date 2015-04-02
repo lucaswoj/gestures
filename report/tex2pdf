@@ -27,6 +27,9 @@ echo -e $DOCKERFILE | docker build --tag $DOCKER_TAG -
 docker run --rm --volume "$DIR_LOCAL":"$DIR_REMOTE_MOUNT" $DOCKER_TAG bash -c "
   set -e;
   cd $DIR_REMOTE_MOUNT
+  biber report
+  pdflatex -interaction nonstopmode -halt-on-error -file-line-error $LATEX_LOCAL
+  biber report
   pdflatex -interaction nonstopmode -halt-on-error -file-line-error $LATEX_LOCAL
 "
 
