@@ -96,6 +96,18 @@ We decided to use a subset of the gestures defined in the ``\$1 Unistroke Recogn
 \item they are easy to draw for users
 \end{itemize}
 
+In addition to these gestures, we considered including a number of ``flick" gestures, rapid arm movements from the neutral position, in which the user's arm is by their side, to a direction (forwards, outwards, backwards). It was thought that these gesture would also be useful as a semantic user input technique, allowing for direct manipulation of virtual interfaces or quick activation of functionality. After some experimentation, however, we found these gestures were not well suited to identification by our neural network. We theorize this may be due to the relatively short duration of these gestures. A ``flick forwards" gesture might only take 100 milliseconds to perform, while most of the \$1 Recognizer gestures take 1 to 2 seconds. This very short burst of accelerometer data may look like background noise to the neural network or just be too different a classification task. Further work could be done in this area.
+
+In the end, we chose to focus on the recognition of the following gestures
+\begin{itemize}
+\item circle
+\item triangle
+\item check
+\item pigtail
+\item arrow
+\item star
+\end{itemize}
+
 \section{Data Collection App}
 
 \begin{figure}[ht!]
