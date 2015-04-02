@@ -11,4 +11,4 @@ nb-configuration.xml
 /report/*.out
 /report/*.aux
 /report/*.log
-/report/*.odf
+/report/*.pdf
