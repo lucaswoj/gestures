@@ -28,9 +28,25 @@ Hand and arm gesture recognition is another ideal input method for smart watches
 There are presently no publicly available gesture recognition solutions for off-the-shelf smart watches, though theories and interface ideas have been prototyped with other sensors such as Microsoft Kinect or custom ultra-sound detection systems.
 
 The potential applications of this technology are far-reaching, from seamless control of Internet-of-things devices to accessibility for visually impaired users.
-We have acquired a LG G Watch and a Nexus 5 phone to record gesture data via a simple, custom-built Android  application. Data collected from the watchâ€™s accelerometer, magnetometer, and gyroscope will be used to train a neural network to classify a set of simple gestures. We will compare the accuracy and performance of our classifier against similar gesture recognition systems in the research community.
+We have acquired a LG G Watch and a Nexus 5 phone to record gesture data via a simple, custom-built Android  application. Data collected from the watch a€™s accelerometer, magnetometer, and gyroscope will be used to train a neural network to classify a set of simple gestures. We will compare the accuracy and performance of our classifier against similar gesture recognition systems in the research community.
 
 \section{Theoretical Background Material}
+Our work is inspired by two works in particular. First, there is the famous "Learning Representations by Back-Propagating Errors" paper that first introduced the back propagation algorithm. Second, there is "Gestures without Libraries, Toolkits, or Training: A \$1 Recognizer for User Interface Prototypes". The former lays the groundwork for our solution and the latter provided motivation for the problem domain. 
+
+\subsection{Backpropagation}
+Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks. 
+
+It is most often used in the supervised learning process as it requires the expected labelling for a set of inputs.  Before the formulation of this algorithm there
+
+\subsection{\$1 Recognizer}
+
+\section{References}
+\begin{itemize}
+\item Orr, Genevieve B. "Error Backpropagation." Error Backpropagation. Williamette University, n.d. Web. 02 Apr. 2015.
+\item Rumelhart, D. E., Hinton, G. E., and Williams, R. J. Learning representations by back-propagating errors. Nature, 323, 533--536 [pdf]
+\item Wobbrock, J.O., Wilson, A.D. and Li, Y. (2007). Gestures without libraries, toolkits or training: A $1 recognizer for user interface prototypes. Proceedings of the ACM Symposium on User Interface Software and Technology (UIST '07). Newport, Rhode Island (October 7-10, 2007). New York: ACM Press, pp. 159-168.
+
+\end{itemize}
 
 % Theoretical background material with references
 
