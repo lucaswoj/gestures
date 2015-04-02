@@ -1,5 +1,5 @@
-report.pdf: report.md
-	./tex2pdf report.tex
+report.pdf: report.tex
+	tex2pdf report.tex
 
 bib: report.bib
 	biber report
