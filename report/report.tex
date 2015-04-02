@@ -1,49 +1,11 @@
-\documentclass[]{article}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{amssymb,amsmath}
-\usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
-% use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
-  \usepackage[utf8]{inputenc}
-\else % if luatex or xelatex
-  \ifxetex
-    \usepackage{mathspec}
-    \usepackage{xltxtra,xunicode}
-  \else
-    \usepackage{fontspec}
-  \fi
-  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
-  \newcommand{\euro}{€}
-\fi
-% use microtype if available
-\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
-\ifxetex
-  \usepackage[setpagesize=false, % page size defined by xetex
-              unicode=false, % unicode breaks when used with xetex
-              xetex]{hyperref}
-\else
-  \usepackage[unicode=true]{hyperref}
-\fi
-\hypersetup{breaklinks=true,
-            bookmarks=true,
-            pdfauthor={Lucas Wojciechowski, Dane Carr, Ariel Weingarten},
-            pdftitle={ECE457B: Smartwatch Gesture Recognition},
-            colorlinks=true,
-            citecolor=blue,
-            urlcolor=blue,
-            linkcolor=magenta,
-            pdfborder={0 0 0}}
-\urlstyle{same}  % don't use monospace font for urls
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
-\setcounter{secnumdepth}{0}
+\documentclass{article}
 
-\author{}
-\date{}
+\usepackage{fullpage}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{pdfpages}
 
 \begin{document}
 
@@ -52,7 +14,7 @@
 \section{Abstract}
 
 \section{Problem Statement and Solution Motivation}
-Wearable technology, such as smart watches, are poised to become a ubiquitous consumer product. Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods. 
+Wearable technology, such as smart watches, are poised to become a ubiquitous consumer product. Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods.
 Voice commands may be part of the solution, but there are many situations where they are ineffective, due to privacy, politeness, or excessive background noise.
 Hand and arm gesture recognition is another ideal input method for smart watches. Though less expressive than voice commands, these movements are relatively private and they are a natural way to communicate with the environment.
 There are presently no publicly available gesture recognition solutions for off-the-shelf smart watches, though theories and interface ideas have been prototyped with other sensors such as Microsoft Kinect or custom ultra-sound detection systems.
