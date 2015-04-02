@@ -21,12 +21,12 @@
 % The common requirement for all project is that the students in each group need to make use in their design project any method or combination of methods of material taught in the course (or closely related to it) to solve the proposed problem or improve on an existing solution. These are the required deliverables
 % A report of 20 to 25 pages needs to be provided with these sections:
 
-\section{Abstract}
+\chapter{Abstract}
 
 % Abstract
 
-\section{Problem Statement and Solution Motivation}
-Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatches sales are projected to reach 90 million units by 2018 (http://www.businessinsider.com/global-smartwatch-sales-set-to-explode-2014-3). Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods. 
+\chapter{Problem Statement and Solution Motivation}
+Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatches sales are projected to reach 90 million units by 2018 (http://www.businessinsider.com/global-smartwatch-sales-set-to-explode-2014-3). Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods.
 
 \begin{figure}[ht!]
   \centering
@@ -40,20 +40,20 @@ Hand and arm gestures could be used to augment existing input paradigms. Though 
 
 We have acquired a LG G Watch R and a Nexus 5 phone to record gesture data via a simple, custom-built Android application. Data collected from the watch's accelerometer will be used to train a neural network to classify a set of simple gestures. We will compare the accuracy and performance of our classifier against similar gesture recognition systems in the research community.
 
-\section{Theoretical Background Material}
+\chapter{Theoretical Background Material}
 Our work is inspired by two works in particular. First, there is the famous ``Learning Representations by Back-Propagating Errors" paper that first introduced the back propagation algorithm. Second, there is ``Gestures without Libraries, Toolkits, or Training: A \$1 Recognizer for User Interface Prototypes". The former lays the groundwork for our solution and the latter provided motivation for the problem domain.
 
-\subsection{Backpropagation}
+\section{Backpropagation}
 
 Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks.
 
 It is most often used in the supervised learning process as it requires the expected labeling for a set of inputs.  Before the formulation of this algorithm there
 
-\subsection{\$1 Recognizer}s
+\section{\$1 Recognizer}s
 
 % Theoretical background material with references
 
-\section{Solution}
+\chapter{Solution}
 
 % Present your solution using tool(s) learned in class (or something related)
 
@@ -76,53 +76,51 @@ In the end, the system we built consists of the following components
 
 In the following subsections, we will discuss the requirements and implementation of each component in detail.
 
-\subsection{Gesture Set}
+\section{Gesture Set}
 
 % Which gestures worked and which gestures didn't work?
 
-\subsection{Data Collection App}
+\section{Data Collection App}
 
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{app-1}
+\begin{figure}[ht!]
+  \centering
+  \includegraphics[width=90mm]{app}
+  \caption{Screenshot of Android smartwatch sensor data collection app}
 \end{figure}
 
-\begin{figure}
-\includegraphics[width=0.5\textwidth]{app-2}
-\end{figure}
+\section{Repository of Testing and Training Data}
 
-\subsection{Repository of Testing and Training Data}
+\section{Neural Network Implementation}
 
-\subsection{Neural Network Implementation}
+\section{Testing Harness}
 
-\subsection{Testing Harness}
-
-\subsection{Topology Optimizer}
+\section{Topology Optimizer}
 
 % How did we determine the optimal toplogy?
 % What was the optimal topology?
 % What were the performance implications of larger / smaller toplogies
 
-\section{Results}
+\chapter{Results}
 
-\subsection{Codebase Metrics}
+\section{Codebase Metrics}
 
 % How many lines of code do we have?
 
-\subsection{Training Performance}
+\section{Training Performance}
 
 % CPU cost of training
 % Number of data points needed to train system
 % Difficulty of collecting data
 
-\subsection{Classification Performance}
+\section{Classification Performance}
 
 % Performance relative to the $1 Recognizer
 
-\section{Conclusion}
+\chapter{Conclusion}
 
 % Conclusion
 
-\section{References}
+\chapter{References}
 \begin{itemize}
 \item Orr, Genevieve B. "Error Backpropagation." Error Backpropagation. Williamette University, n.d. Web. 02 Apr. 2015.
 \item Rumelhart, D. E., Hinton, G. E., and Williams, R. J. Learning representations by back-propagating errors. Nature, 323, 533--536 [pdf]
