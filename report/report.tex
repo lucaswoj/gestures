@@ -7,6 +7,8 @@
 \usepackage{parskip}
 \usepackage{pdfpages}
 
+% TODO create title page
+
 \begin{document}
 
 % The common requirement for all project is that the students in each group need to make use in their design project any method or combination of methods of material taught in the course (or closely related to it) to solve the proposed problem or improve on an existing solution. These are the required deliverables
@@ -46,9 +48,58 @@ It is most often used in the supervised learning process as it requires the expe
 
 % Present your solution using tool(s) learned in class (or something related)
 
+% TODO good transition from previous section
+We set out to build a system which would allow us experiment with smartwatch gesture recognition.
+
+As a research platform, this system was designed to be extensible, simple, and easy to work with. As a potential consumer platform, this system was built to be portable and permanent enough to run natively on Andorid smartphones.
+
+Due to the lack of prior art in this space, we had to build some fundamental infrastructure ourselves, such as a data collection system and data repository for the smartwatch gesture sensor data.
+
+In the end, the system we built consists of the following components
+\begin{enumerate}
+\item a set of gestures that were easy to perform by users and easy to recognize by our machine
+\item a data collection app collected smartwatch sensor data from users performing our gestures
+\item a repository of training and testing data sets from the collection app
+\item a custom neural network implementation designed for performance and portability on Android smartphones
+\item a testing harness which replayed the data to train and test a neural network for gesture recognition
+\item a neural network topology optimizer based on genetic algorithms
+\end{enumerate}
+
+In the following subsections, we will discuss the requirements and implementation of each component in detail.
+
+\subsection{Gesture Set}
+
+% Which gestures worked and which gestures didn't work?
+
+\subsection{Data Collection App}
+
+\subsection{Repository of Testing and Training Data}
+
+\subsection{Neural Network Implementation}
+
+\subsection{Testing Harness}
+
+\subsection{Topology Optimizer}
+
+% How did we determine the optimal toplogy?
+% What was the optimal topology?
+% What were the performance implications of larger / smaller toplogies
+
 \section{Results}
 
-% Results: Analysis and comparison if any
+\subsection{Codebase Metrics}
+
+% How many lines of code do we have?
+
+\subsection{Training Performance}
+
+% CPU cost of training
+% Number of data points needed to train system
+% Difficulty of collecting data
+
+\subsection{Classification Performance}
+
+% Performance relative to the $1 Recognizer
 
 \section{Conclusion}
 
