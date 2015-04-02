@@ -31,6 +31,7 @@
 Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatches sales are projected to reach 90 million units by 2018 \cite{BusinessInsider}. Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods. 
 
 \begin{figure}[ht!]
+  \label{smartwatch}
   \centering
   \includegraphics[width=90mm]{smartwatch.png}
   \caption{Smartwatch Annual Sales Projection \label{overflow}}
@@ -54,6 +55,13 @@ It is most often used in the supervised learning process as it requires the expe
 \section{\$1 Recognizer}s
 
 % Theoretical background material with references
+
+\begin{figure}[ht!]
+  \label{gestures}
+  \centering
+  \includegraphics[width=90mm]{gestures}
+  \caption{Gestures supported by the \$1 Recognizer}
+\end{figure}
 
 \chapter{Solution}
 
@@ -82,17 +90,57 @@ In the following subsections, we will discuss the requirements and implementatio
 
 % Which gestures worked and which gestures didn't work?
 
+We decided to use a subset of the gestures defined in the ``\$1 Unistroke Recognizer" paper, as discussed above and pictured in \ref{gestures}. Using this set of gestures was a good solution to our problem because
+\begin{itemize}
+\item they have become the canonical gesture set in the industry, so using them would allow us to directly compare our results to other's
+\item they are well suited, semantically, to act as user input for mobile applications
+\item they are know to be easily recognizable by algorithms
+\item they are easy to draw for users
+\end{itemize}
+
+In addition to these gestures, we considered including a number of ``flick" gestures, rapid arm movements from the neutral position, in which the user's arm is by their side, to a direction (forwards, outwards, backwards). It was thought that these gesture would also be useful as a semantic user input technique, allowing for direct manipulation of virtual interfaces or quick activation of functionality. After some experimentation, however, we found these gestures were not well suited to identification by our neural network. We theorize this may be due to the relatively short duration of these gestures. A ``flick forwards" gesture might only take 100 milliseconds to perform, while most of the \$1 Recognizer gestures take 1 to 2 seconds. This very short burst of accelerometer data may look like background noise to the neural network or just be too different a classification task. Further work could be done in this area.
+
+In the end, we chose to focus on the recognition of the following gestures based on their user approachability and our neural network's ability to differentiate between them
+\begin{itemize}
+\item circle
+\item triangle
+\item check
+\item pigtail
+\item arrow
+\item star
+\end{itemize}
+
 \section{Data Collection App}
 
+We had to collect a data set in order to train and test our nerual network.
+
+% TODO expand on the Android Apis we used here. What is Android wear?
+
+To this end, we built an Android app which would prompt users to draw a particular gesture, vibrate their watch to indicate the beginning of the data collection period, collect data from all smartwatch sensors during the data collection period, vibrate again to indicate the end of the collection period, and store the data for later analysis. This app was designed to be used either directly by the user wearing the smartwatch or in a ``researcher and research subject" setting.
+
+% TODO explain user interface
+The interface is pictured in \ref{app}.
+
 \begin{figure}[ht!]
+  \label{app}
   \centering
   \includegraphics[width=90mm]{app}
   \caption{Screenshot of Android smartwatch sensor data collection app}
 \end{figure}
 
+The smartwatch we used, the LG R Watch, reported data from the three different sensors
+\begin{itemie}
+\item accelerometer
+\item gyroscope
+\item magnetometer (compass)
+\end{itemize}
+In addition, it reported a composite ``orientation" sensor value.
+
 \section{Repository of Testing and Training Data}
 
 \section{Neural Network Implementation}
+
+% How did we format the data for input to the NN?
 
 \section{Testing Harness}
 
