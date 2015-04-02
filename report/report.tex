@@ -6,6 +6,8 @@
 \usepackage{graphicx}
 \usepackage{parskip}
 \usepackage{pdfpages}
+\usepackage[style=ieee,sorting=none,dateabbrev=false,backend=biber]{biblatex}
+\addbibresource{report.bib}
 
 % TODO create title page
 
@@ -19,7 +21,7 @@
 % Abstract
 
 \section{Problem Statement and Solution Motivation}
-Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatches sales are projected to reach 90 million units by 2018 (http://www.businessinsider.com/global-smartwatch-sales-set-to-explode-2014-3). Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods. 
+Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatches sales are projected to reach 90 million units by 2018 \cite{BusinessInsider}. Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods. 
 
 \begin{figure}[ht!]
   \centering
@@ -107,12 +109,8 @@ In the following subsections, we will discuss the requirements and implementatio
 % Conclusion
 
 \section{References}
-\begin{itemize}
-\item Orr, Genevieve B. "Error Backpropagation." Error Backpropagation. Williamette University, n.d. Web. 02 Apr. 2015.
-\item Rumelhart, D. E., Hinton, G. E., and Williams, R. J. Learning representations by back-propagating errors. Nature, 323, 533--536 [pdf]
-\item Wobbrock, J.O., Wilson, A.D. and Li, Y. (2007). Gestures without libraries, toolkits or training: A \$1 recognizer for user interface prototypes. Proceedings of the ACM Symposium on User Interface Software and Technology (UIST '07). Newport, Rhode Island (October 7-10, 2007). New York: ACM Press, pp. 159-168.
 
-\end{itemize}
 % References
+\printbibliography
 
 \end{document}
