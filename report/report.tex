@@ -114,12 +114,10 @@ In the end, we chose to focus on the recognition of the following gestures based
 
 We had to collect a data set in order to train and test our nerual network.
 
-% TODO expand on the Android Apis we used here. What is Android wear?
 
 To this end, we built an Android app which would prompt users to draw a particular gesture, vibrate their watch to indicate the beginning of the data collection period, collect data from all smartwatch sensors during the data collection period, vibrate again to indicate the end of the collection period, and store the data for later analysis. This app was designed to be used either directly by the user wearing the smartwatch or in a ``researcher and research subject" setting.
 
-% TODO explain user interface
-The interface is pictured in \ref{app}.
+% TODO ARIEL expand on the Android Apis we used here. What is Android wear?
 
 \begin{figure}[ht!]
   \label{app}
@@ -128,13 +126,18 @@ The interface is pictured in \ref{app}.
   \caption{Screenshot of Android smartwatch sensor data collection app}
 \end{figure}
 
+
+The app interface is pictured in \ref{app}. % TODO ARIEL explain user interface
+
 The smartwatch we used, the LG R Watch, reported data from the three different sensors
-\begin{itemie}
+\begin{itemize}
 \item accelerometer
 \item gyroscope
 \item magnetometer (compass)
 \end{itemize}
-In addition, it reported a composite ``orientation" sensor value.
+In addition, it reported data from a virtual ``orientation" sensor, which was a composite of the other sensors in a more intuitive reference frame.
+
+While we collected data from all these sensors, our neural network seemed to perform best on the accelerometer data alone.
 
 \section{Repository of Testing and Training Data}
 
