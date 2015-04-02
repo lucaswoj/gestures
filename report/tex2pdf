@@ -1,0 +1,32 @@
+#!/bin/bash
+set -e
+
+LATEX_LOCAL=$1
+DIR_LOCAL=$(cd $(dirname $LATEX_LOCAL) && pwd)
+BASENAME=$(basename $LATEX_LOCAL .tex)
+DIR_REMOTE_MOUNT=/var/latex/mount
+
+# Ensure latex docker container is up to date
+DOCKER_TAG=lucaswoj/latex
+DOCKERFILE="
+FROM ubuntu \n
+RUN apt-get --force-yes --assume-yes update \n
+RUN apt-get --force-yes --assume-yes install wget unzip make \n
+RUN apt-get --force-yes --assume-yes install texlive \n
+RUN apt-get --force-yes --assume-yes install texinfo \n
+RUN apt-get --force-yes --assume-yes install texlive-latex-extra \n
+RUN apt-get --force-yes --assume-yes install texlive-bibtex-extra \n
+RUN apt-get --force-yes --assume-yes install texlive-science \n
+RUN apt-get --force-yes --assume-yes install biber \n
+RUN apt-get --force-yes --assume-yes install inkscape \n
+RUN apt-get --force-yes --assume-yes install pandoc
+"
+boot2docker up
+echo -e $DOCKERFILE | docker build --tag $DOCKER_TAG -
+
+docker run --rm --volume "$DIR_LOCAL":"$DIR_REMOTE_MOUNT" $DOCKER_TAG bash -c "
+  set -e;
+  cd $DIR_REMOTE_MOUNT
+  pdflatex -interaction nonstopmode -halt-on-error -file-line-error $LATEX_LOCAL
+"
+
