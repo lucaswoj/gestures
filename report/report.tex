@@ -164,11 +164,11 @@ The system comprised of one application on a Nexus 5 smartphone and one on an LG
 \end{figure}
 
 
-The app interface is pictured in \ref{app}. There are four buttons and two indicators in the interface. The ``NEXT" and ``BACK" buttons are used to cycle through the different gestures in the \$1 Recognizer gesture set as well as some other gestures that we experimented with. The ``RECORD" button is used to start a two second data collection period on the smartwatch. The smart watch would vibrate at the beginning and end of the data collection. This was a useful feature because it reduced by noise in our measurements by keeping the subject informed on when they were being tracked. In the first version, we only had the vibration at the beginning of the data collection period and time was wasted making sure that two seconds had passed before moving again.
+The app interface is pictured in \ref{app}. There are four buttons and two indicators in the interface. The ``NEXT" and ``BACK" buttons are used to cycle through the different gestures in the \$1 Recognizer gesture set as well as some other gestures that we experimented with. The ``RECORD" button is used to start a two second data collection period on the smartwatch. The smart watch would vibrate at the beginning and end of the data collection. This was a useful feature because it reduced noise in our measurements by keeping the subject informed on when they were being tracked. In the first version, we only had the vibration at the beginning of the data collection period and time was wasted making sure that two seconds had passed before moving again.
 
 The other two features of the interface were for setting up the data collection system. The ``OFF" button is pressed to initiate the pairing between the watch and the phone. If the connection is successful, then the watch will vibrate. Otherwise, the ``FAILED" indicator would turn red indicating a connection issue.
 
-Each gesture had its own folder where its data was saved to. Using the Android File Browser desktop application, the research can copy these files over for use with the neural network.
+Each gesture had its own folder where its data was saved to. Using the Android File Browser desktop application, the researcher can copy these files over for use with the neural network.
 
 The smartwatch we used, the LG R Watch, reported data from three sensors
 \begin{itemize}
@@ -190,7 +190,7 @@ These files were later downloaded to a computer, divided into testing and traini
 
 We considered a few options for our neural network implementation itself
 \begin{itemize}
-\item Use a well-known Java Neural Network library such as Neurotroph
+\item Use a well-known Java Neural Network library such as Neuroph
 \item Use Android-compatible OpenCV Neural Network bindings
 \item Write a custom Neural Network implementation
 \end{itemize}
@@ -214,7 +214,7 @@ Future work for this implementation could include
 \begin{itemize}
 \item Serialization and deserialization of trained neural networks, allowing them to be optimally trained once and unserialized on another device to be used for classification. It would not be advisable to retrain the neural network every time it is used on an Android device.
 \item Support for custom activation and error functions. Currently, a sigmoid activation function and sum-of-squares error function are hard-coded into the implementation but it would be relatively easy to support custom error and activation functions. This would allow a greater degree of performance tuning.
-\item Profiling and performance optimization on Android devices. In particular, we should make sure this implementation does not perform any unexpectedly high overhead operations and leverages SMID wherever possible.
+\item Profiling and performance optimization on Android devices. In particular, we should make sure this implementation does not perform any unexpectedly high overhead operations and leverages SIMD wherever possible.
 \end{itemize}
 
 The source itself is relatively simple, with only 155 lines of code, including whitespace and comments, and no domain specific assumptions, other than error and activation functions.
