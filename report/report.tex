@@ -31,13 +31,13 @@
 % Abstract
 This report outlines our group's efforts in Smartwatch Gesture Recognition using artificial neural networks. Smartwatches are increasing in popularity and are becoming an increasingly viable input modality for other smart devices. In their current form, however; they are little more than a delivery system for notifications. We built a neural network that uses the backpropagation  algorithm in an attempt to leverage the onboard sensors on these devices to classify a set of gestures.
 
-We built both a Android smartphone and smartwatch application to record data and a genetic algorithm based optimizer in an effort to achieve this goal. Our results are encouraging and lay the groundwork for further work and research. Namely, moving the neural network onto the phone itself for real-time classification and expanding the gesture set that it can recognize.
+We built both an Android smartphone and smartwatch application to record data and a genetic algorithm based optimizer in an effort to achieve this goal. Our results are encouraging and lay the groundwork for further work and research. Namely, moving the neural network onto the phone itself for real-time classification and expanding the gesture set that it can recognize.
 
 Our results.....
 %TODO fill in from later sections.
 
 \chapter{Problem Statement and Solution Motivation}
-Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatches sales are projected to reach 90 million units by 2018 \cite{BusinessInsider}. Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods.
+Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatch sales are projected to reach 90 million units by 2018 \cite{BusinessInsider}. Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods.
 
 \begin{figure}[ht!]
   \label{smartwatch}
@@ -85,8 +85,8 @@ The latter stage is where the name backpropagation originates from. It is compos
 
 Effectively, this performs gradient descent over the error surface of the neural network. \cite{Backprop}
 
-\subsection{\$1 Recognizer}
-The \$1 Recognizer is is a 2-D single stroke gesture recognizer. The motivation behind it is to provide a method for prototyping interfaces that incorporate gestures as part of their control scheme. This is an important aim because in the past, gesture recognizers were only available to experts in pattern matching, not interface designers. One of its greatest selling points is that it is deployable in roughly one hundred lines of code and achieves very high recognition rates with just a handful of training templates.
+\section{\$1 Recognizer}
+The \$1 Recognizer is a 2-D single stroke gesture recognizer. The motivation behind it is to provide a method for prototyping interfaces that incorporate gestures as part of their control scheme. This is an important aim because in the past, gesture recognizers were only available to experts in pattern matching, not interface designers. One of its greatest selling points is that it is deployable in roughly one hundred lines of code and achieves very high recognition rates with just a handful of training templates.
 
 The gesture set in \ref{gestures} was chosen by Wobbrock et al. because it enables common user tasks such as: making selections, executing commands, or entering symbols. \cite{Wobbrock}
 
@@ -106,7 +106,7 @@ Upon seeing such a project, we wanted to provide a similarly powerful and easily
 % TODO good transition from previous section
 We set out to build a system which would allow us experiment with smartwatch gesture recognition.
 
-As a research platform, this system was designed to be extensible, simple, and easy to work with. As a potential consumer platform, this system was built to be portable and permanent enough to run natively on Andorid smartphones.
+As a research platform, this system was designed to be extensible, simple, and easy to work with. As a potential consumer platform, this system was built to be portable and permanent enough to run natively on Android smartphones.
 
 Due to the lack of prior art in this space, we had to build some fundamental infrastructure ourselves, such as a data collection system and data repository for the smartwatch gesture sensor data.
 
@@ -130,7 +130,7 @@ We decided to use a subset of the gestures defined in the ``\$1 Unistroke Recogn
 \begin{itemize}
 \item they have become the canonical gesture set in the industry, so using them would allow us to directly compare our results to other's
 \item they are well suited, semantically, to act as user input for mobile applications
-\item they are know to be easily recognizable by algorithms
+\item they are known to be easily recognizable by algorithms
 \item they are easy to draw for users
 \end{itemize}
 
