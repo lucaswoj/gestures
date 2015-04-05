@@ -128,12 +128,12 @@ In the end, we chose to focus on the recognition of the following gestures based
 
 \section{Data Collection App}
 
-We had to collect a data set in order to train and test our nerual network.
+We had to collect a data set in order to train and test our neural network.
 
 
-To this end, we built an Android app which would prompt users to draw a particular gesture, vibrate their watch to indicate the beginning of the data collection period, collect data from all smartwatch sensors during the data collection period, vibrate again to indicate the end of the collection period, and store the data for later analysis. This app was designed to be used either directly by the user wearing the smartwatch or in a ``researcher and research subject" setting.
+To this end, we built a pair of Android apps which would prompt users to draw a particular gesture, vibrate their watch to indicate the beginning of the data collection period, collect data from all smartwatch sensors during the data collection period, vibrate again to indicate the end of the collection period, and store the data for later analysis. This app was designed to be used either directly by the user wearing the smartwatch or in a ``researcher and research subject" setting.
 
-% TODO ARIEL expand on the Android Apis we used here. What is Android wear?
+The system comprised of one application on a Nexus 5 smartphone and one on an LG G Watch R. The application on the phone was used to manage the collection of data and display the gestures that were to be performed. The application on the watch waited for a cue from the phone to start collecting data for two seconds and then would dump the data back to the phone for later analysis. We leveraged the Wearable MessageAPI to transmit data over a bluetooth connection between the phone and the watch. 
 
 \begin{figure}[ht!]
   \label{app}
@@ -143,9 +143,13 @@ To this end, we built an Android app which would prompt users to draw a particul
 \end{figure}
 
 
-The app interface is pictured in \ref{app}. % TODO ARIEL explain user interface
+The app interface is pictured in \ref{app}. There are four buttons and two indicators in the interface. The ``NEXT" and ``BACK" buttons are used to cycle through the different gestures in the \$1 Recognizer gesture set as well as some other gestures that we experimented with. The ``RECORD" button is used to start a two second data collection period on the smartwatch. The smart watch would vibrate at the beginning and end of the data collection. This was a useful feature because it reduced by noise in our measurements by keeping the subject informed on when they were being tracked. In the first version, we only had the vibration at the beginning of the data collection period and time was wasted making sure that two seconds had passed before moving again. 
 
-The smartwatch we used, the LG R Watch, reported data from the three different sensors
+The other two features of the interface were for setting up the data collection system. The ``OFF" button is pressed to initiate the pairing between the watch and the phone. If the connection is successful, then the watch will vibrate. Otherwise, the ``FAILED" indicator would turn red indicating a connection issue.
+
+Each gesture had its own folder where its data was saved to. Using the Android File Browser desktop application, the research can copy these files over for use with the neural network.
+
+The smartwatch we used reported data from the three different sensors
 \begin{itemize}
 \item accelerometer
 \item gyroscope
@@ -153,7 +157,7 @@ The smartwatch we used, the LG R Watch, reported data from the three different s
 \end{itemize}
 In addition, it reported data from a virtual ``orientation" sensor, which was a composite of the other sensors in a more intuitive reference frame.
 
-While we collected data from all these sensors, our neural network seemed to perform best on the accelerometer data alone.
+While we collected data from all these sensors, our neural network seemed to perform best when using only the accelerometer data.
 
 \section{Repository of Testing and Training Data}
 
