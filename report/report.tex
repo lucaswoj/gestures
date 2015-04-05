@@ -86,7 +86,7 @@ The latter stage is where the name backpropagation originates from. It is compos
 Effectively, this performs gradient descent over the error surface of the neural network. \cite{Backprop}
 
 \subsection{\$1 Recognizer}
-The \$1 Recognizer is is a 2-D single stroke gesture recognizer. The motivation behind it is to provide a method for prototyping interfaces that incorporate gestures as part of their control scheme. This is an important aim because in the past, gesture recognizers were only available to experts in pattern matching, not interface designers. One of its greatest selling points is that it is deployable in roughly one hundred lines of code and achieves very high recognition rates with just a handful of training templates. 
+The \$1 Recognizer is is a 2-D single stroke gesture recognizer. The motivation behind it is to provide a method for prototyping interfaces that incorporate gestures as part of their control scheme. This is an important aim because in the past, gesture recognizers were only available to experts in pattern matching, not interface designers. One of its greatest selling points is that it is deployable in roughly one hundred lines of code and achieves very high recognition rates with just a handful of training templates.
 
 The gesture set in \ref{gestures} was chosen by Wobbrock et al. because it enables common user tasks such as: making selections, executing commands, or entering symbols. \cite{Wobbrock}
 
@@ -146,16 +146,15 @@ In the end, we chose to focus on the recognition of the following gestures based
 \item star
 \end{itemize}
 
-Performing gestures in 3-D space can be a fatiguing activity for users. To address this, we had our users keep their arms at their sides in a resting position and perform the gestures by their sides. This also helped to constrain our problem domain because we could ignore issues such as rotation invariant recognition. i.e. Classifying the same gesture drawn with varying degrees of rotation. 
+Performing gestures in 3-D space can be a fatiguing activity for users. To address this, we had our users keep their arms at their sides in a resting position and perform the gestures by their sides. This also helped to constrain our problem domain because we could ignore issues such as rotation invariant recognition. i.e. Classifying the same gesture drawn with varying degrees of rotation.
 
 \section{Data Collection App}
 
-We had to collect a data set in order to train and test our neural network.
-
+We had to collect a data set of smartwatch sensor output from users performing our gestures in order to train and test our neural network.
 
 To this end, we built a pair of Android apps which would prompt users to draw a particular gesture, vibrate their watch to indicate the beginning of the data collection period, collect data from all smartwatch sensors during the data collection period, vibrate again to indicate the end of the collection period, and store the data for later analysis. This app was designed to be used either directly by the user wearing the smartwatch or in a ``researcher and research subject" setting.
 
-The system comprised of one application on a Nexus 5 smartphone and one on an LG G Watch R. The application on the phone was used to manage the collection of data and display the gestures that were to be performed. The application on the watch waited for a cue from the phone to start collecting data for two seconds and then would dump the data back to the phone for later analysis. We leveraged the Wearable MessageAPI to transmit data over a bluetooth connection between the phone and the watch. 
+The system comprised of one application on a Nexus 5 smartphone and one on an LG G Watch R. The application on the phone was used to manage the collection of data and display the gestures that were to be performed. The application on the watch waited for a cue from the phone to start collecting data for two seconds and then would dump the data back to the phone for later analysis. We leveraged the Wearable MessageAPI to transmit data over a bluetooth connection between the phone and the watch.
 
 \begin{figure}[ht!]
   \label{app}
@@ -165,27 +164,62 @@ The system comprised of one application on a Nexus 5 smartphone and one on an LG
 \end{figure}
 
 
-The app interface is pictured in \ref{app}. There are four buttons and two indicators in the interface. The ``NEXT" and ``BACK" buttons are used to cycle through the different gestures in the \$1 Recognizer gesture set as well as some other gestures that we experimented with. The ``RECORD" button is used to start a two second data collection period on the smartwatch. The smart watch would vibrate at the beginning and end of the data collection. This was a useful feature because it reduced by noise in our measurements by keeping the subject informed on when they were being tracked. In the first version, we only had the vibration at the beginning of the data collection period and time was wasted making sure that two seconds had passed before moving again. 
+The app interface is pictured in \ref{app}. There are four buttons and two indicators in the interface. The ``NEXT" and ``BACK" buttons are used to cycle through the different gestures in the \$1 Recognizer gesture set as well as some other gestures that we experimented with. The ``RECORD" button is used to start a two second data collection period on the smartwatch. The smart watch would vibrate at the beginning and end of the data collection. This was a useful feature because it reduced by noise in our measurements by keeping the subject informed on when they were being tracked. In the first version, we only had the vibration at the beginning of the data collection period and time was wasted making sure that two seconds had passed before moving again.
 
 The other two features of the interface were for setting up the data collection system. The ``OFF" button is pressed to initiate the pairing between the watch and the phone. If the connection is successful, then the watch will vibrate. Otherwise, the ``FAILED" indicator would turn red indicating a connection issue.
 
 Each gesture had its own folder where its data was saved to. Using the Android File Browser desktop application, the research can copy these files over for use with the neural network.
 
-The smartwatch we used reported data from the three different sensors
+The smartwatch we used, the LG R Watch, reported data from three sensors
 \begin{itemize}
 \item accelerometer
 \item gyroscope
 \item magnetometer (compass)
 \end{itemize}
-In addition, it reported data from a virtual ``orientation" sensor, which was a composite of the other sensors in a more intuitive reference frame.
+In addition, it reported data from a virtual ``orientation" sensor, which was a composite of the other sensors in a more intuitive reference frame. While we collected data from all these sensors, our neural network seemed to perform best on the accelerometer data alone.
 
 While we collected data from all these sensors, our neural network seemed to perform best when using only the accelerometer data.
 
-\section{Repository of Testing and Training Data}
+The data was stored on the Android phone as a set of JSON files, one file per data collection period. % TODO ARIEL specify JSON file format. What where the fields and how were they used?
+
+These files were later downloaded to a computer, divided into testing and training data sets (in a ratio of 3 training to 1 testing), and checked into the same git repository as the rest of our project. You can browse our data sets on GitHub at \url{https://github.com/lucaswoj/gestures/tree/master/code/data}.
 
 \section{Neural Network Implementation}
 
 % How did we format the data for input to the NN?
+
+We considered a few options for our neural network implementation itself
+\begin{itemize}
+\item Use a well-known Java Neural Network library such as Neurotroph
+\item Use Android-compatible OpenCV Neural Network bindings
+\item Write a custom Neural Network implementation
+\end{itemize}
+
+Initially, we were concerned with the performance of a Neural Network written in Java for on-line analysis and considered using OpenCV bindings to run our network on the GPU. The parallelization paradigm of GPUs is particularly well suited to running large neural networks very efficiently. However, our neural network did not have to be as large as we initially thought in order to make accurate classifications and the performance of a pure Java implementation was acceptable. We will discuss performance in greater detail in the next chapter, ``Results".
+
+Given that a pure Java implementation was acceptable, we decided to implement our own neural network library, instead of using an existing implementation, to ensure its ease of use in development, portability to Android phones, and performance for on-line analysis of gestures.
+
+Writing the Neural Network was surprisingly straightforward. We first decided on a simple interface that suited our use case.
+\begin{verbatim}
+class NeuralNetwork {
+  public NeuralNetwork(double learningRate, int[] topology);
+  public NeuralNetwork(double learningRate, ArrayList<double[][]> weights);
+  public void train(double[] inputs, double[] outputsTarget);
+  public double[] classify(double[] inputs);
+
+}
+\end{verbatim}
+
+Future work for this implementation could include
+\begin{itemize}
+\item Serialization and deserialization of trained neural networks, allowing them to be optimally trained once and unserialized on another device to be used for classification. It would not be advisable to retrain the neural network every time it is used on an Android device.
+\item Support for custom activation and error functions. Currently, a sigmoid activation function and sum-of-squares error function are hard-coded into the implementation but it would be relatively easy to support custom error and activation functions. This would allow a greater degree of performance tuning.
+\item Profiling and performance optimization on Android devices. In particular, we should make sure this implementation does not perform any unexpectedly high overhead operations and leverages SMID wherever possible.
+\end{itemize}
+
+The source itself is relatively simple, with only 155 lines of code, including whitespace and comments, and no domain specific assumptions, other than error and activation functions.
+
+You can view the source for our implementation at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/NeuralNetwork.java}.
 
 \section{Testing Harness}
 
@@ -194,6 +228,10 @@ While we collected data from all these sensors, our neural network seemed to per
 % How did we determine the optimal toplogy?
 % What was the optimal topology?
 % What were the performance implications of larger / smaller toplogies
+
+Once we had a functional neural network and repository of training and testing data, we had to determine the optimal topology for our neural network. Because performance is a concern for on-line analysis, we wanted to find the best trade off between the number of nodes in the network and the correctness of its classifications.
+
+To this end, we built a genetic-algorithms-based Neural Network topology optimizer. This program generated a population of random neural network topologies, each of which had between 1 and 10 hidden layers, each of which containing between 1 and 3000 hidden nodes. The fitness of each topology was calculated as the average error over 3 trials of training it on 2000 training samples and then testing it on all testing samples.
 
 \chapter{Results}
 
