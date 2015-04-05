@@ -44,10 +44,11 @@ Hand and arm gestures could be used to augment existing input paradigms. Though 
 We have acquired a LG G Watch R and a Nexus 5 phone to record gesture data via a simple, custom-built Android application. Data collected from the watch's accelerometer will be used to train a neural network to classify a set of simple gestures. We will compare the accuracy and performance of our classifier against similar gesture recognition systems in the research community.
 
 \chapter{Theoretical Background Material}
+% Theoretical background material with references
 Our work is inspired by two works in particular. First, there is the famous ``Learning Representations by Back-Propagating Errors" paper that first introduced the back propagation algorithm. Second, there is ``Gestures without Libraries, Toolkits, or Training: A \$1 Recognizer for User Interface Prototypes". The former lays the groundwork for our solution and the latter provided motivation for the problem domain.
 
 \section{Backpropagation}
-Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks. This problem seemed insurmountable in the early years of neural networks because these hidden layers are intentionally designed such that one does not know what feature they will monitor. This led to a thirty year malaise in the use of neural networks until the introduction of the back propagation algorithm in 1986 by Hinton et al.
+Backpropagation has become a common method for training neural networks. Before its formulation,  there was no way to provide a measure of accuracy for hidden layers in neural networks. This problem seemed insurmountable in the early years of neural networks because these hidden layers are intentionally designed such that one does not know what feature they will monitor. This led to a thirty year malaise in the use of neural networks until the introduction of the back propagation algorithm in 1986 by Hinton et al. \cite{Orr}
 
 Backpropagation is composed of two high-level stages:
 
@@ -55,6 +56,8 @@ Backpropagation is composed of two high-level stages:
 \item Propagate the input parameters forward through the network to determine the initial outputs of the network
 \item Propagate the classification error backwards through the network and update the weights connecting the layers.
 \end{enumerate}
+
+% TODO: Create simple diagram with labeled nodes to clarify steps of the algorithm
 
 The latter stage is where the name backpropagation originates from. It is composed of the following steps:
 \begin{enumerate}
@@ -66,11 +69,16 @@ The latter stage is where the name backpropagation originates from. It is compos
 \item Check if the error of the network is lower than the maximum acceptable error: $E < E_{max}$ If it is, then you're done! Otherwise go back to step 1.
 \end{enumerate}
 
-Effectively, this performs gradient descent over the error surface of the problem domain.
+Effectively, this performs gradient descent over the error surface of the neural network. \cite{Backprop}
 
 \subsection{\$1 Recognizer}
+The \$1 Recognizer is is a 2-D single stroke gesture recognizer. The motivation behind it is to provide a method for prototyping interfaces that incorporate gestures as part of their control scheme. This is an important aim because in the past, gesture recognizers were only available to experts in pattern matching, not interface designers. One of its greatest selling points is that it is deployable in roughly one hundred lines of code and achieves very high recognition rates with just a handful of training templates. 
 
-% Theoretical background material with references
+The gesture set in \ref{gestures} was chosen by Wobbrock et al. because it enables common user tasks such as: making selections, executing commands, or entering symbols. \cite{Wobbrock}
+
+Upon seeing such a project, we wanted to provide a similarly powerful and easily deployable tool for 3-D single stroke gestures.
+
+
 
 \begin{figure}[ht!]
   \label{gestures}
@@ -125,6 +133,8 @@ In the end, we chose to focus on the recognition of the following gestures based
 \item arrow
 \item star
 \end{itemize}
+
+Performing gestures in 3-D space can be a fatiguing activity for users. To address this, we had our users keep their arms at their sides in a resting position and perform the gestures by their sides. This also helped to constrain our problem domain because we could ignore issues such as rotation invariant recognition. i.e. Classifying the same gesture drawn with varying degrees of rotation. 
 
 \section{Data Collection App}
 
