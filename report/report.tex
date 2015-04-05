@@ -63,9 +63,14 @@ Backpropagation is composed of two high-level stages:
 \item Propagate the classification error backwards through the network and update the weights connecting the layers.
 \end{enumerate}
 
-% TODO: Create simple diagram with labeled nodes to clarify steps of the algorithm
+\begin{figure}[ht!]
+  \label{neuralNet}
+  \centering
+  \includegraphics[width=90mm]{neuralNet}
+  \caption{Example of a Neural Network}
+\end{figure}
 
-The latter stage is where the name backpropagation originates from. It is composed of the following steps:
+The latter stage is where the name backpropagation originates from. It is composed of the following steps (see \ref{neuralNet} as a visual aid):
 \begin{enumerate}
 \item Calculate the sensitivity of the output layer, $q$, ($q = Q, Q-1, Q-2,...,1$) using the difference between the target and actual outputs and the derivative of the activation function. $\delta_i = \mathit{a'}(\mathit{input_{fromPreviousLayer}})(o_i - t_i)$
 \item Calculate the sensitivity for each node, $i$, of the previous layer, $q-1$: $^{q-1}\delta_i =  \mathit{a'}(\mathit{input_{fromPreviousLayer}}) \cdot  (\sum\limits_{j} {^{q}w_{ij}* ^{q}\delta_j})$
