@@ -29,11 +29,16 @@
 \chapter{Abstract}
 
 % Abstract
-This report outlines our group's efforts in Smartwatch Gesture Recognition using artificial neural networks. Smartwatches are increasing in popularity and are becoming an increasingly viable input modality for other smart devices. In their current form, however; they are little more than a delivery system for notifications. We built a neural network that uses the backpropagation  algorithm in an attempt to leverage the onboard sensors on these devices to classify a set of gestures.
+This report outlines our group's efforts in Smartwatch Gesture Recognition using artificial neural networks. Smartwatches are increasing in popularity and are becoming an increasingly viable input modality for other smart devices. In their current form, however; they are little more than a delivery system for notifications. Our work attempts to bring hand and arm gestures into the set of user inputs for smartwatches.
 
-We built both an Android smartphone and smartwatch application to record data and a genetic algorithm based optimizer in an effort to achieve this goal. Our results are encouraging and lay the groundwork for further work and research. Namely, moving the neural network onto the phone itself for real-time classification and expanding the gesture set that it can recognize.
+To this end, we set out to recreate the canonical \$1 Recognizer gesture set as outlined by \cite{Wobbrock}. We built both an Android smartphone and smartwatch application to collect training and testing samples. The data that we collected was comprised of the data from the smartwatch's accelerometer, gyroscope, and orientation sensor. 
 
-Our results.....
+We fed this data into a feed-forward multi-layer perceptron artificial neural network that leverages backpropagration. We built a genetic algorithm based optimizer to discover the optimal topology for the neural network. 
+
+In the end we achieved a classification rate of about ninety five percent on a set of six gestures. 
+
+Future work includes expanding classification to the entire \$1 Recognizer Gesture set and moving the neural network onto an Android smartphone to enable real-time classification.
+
 %TODO fill in from later sections.
 
 \chapter{Problem Statement and Solution Motivation}
