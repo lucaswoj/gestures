@@ -39,8 +39,6 @@ In the end we achieved a classification rate of about ninety five percent on a s
 
 Future work includes expanding classification to the entire \$1 Recognizer Gesture set and moving the neural network onto an Android smartphone to enable real-time classification.
 
-%TODO fill in from later sections.
-
 \chapter{Problem Statement and Solution Motivation}
 Wearable technology, such as smartwatches, are poised to become a ubiquitous consumer product. According to businessinsider.com, smartwatch sales are projected to reach 90 million units by 2018 \cite{BusinessInsider}. Many user interface paradigms still need to be rethought for these devices to accommodate their small screens and limited input methods.
 
@@ -189,10 +187,9 @@ The data was stored on the Android phone as a set of JSON files, one file per da
 
 These files were later downloaded to a computer, divided into testing and training data sets (in a ratio of 3 training to 1 testing), and checked into the same git repository as the rest of our project. You can browse our data sets on GitHub at \url{https://github.com/lucaswoj/gestures/tree/master/code/data}.
 
-\section{Neural Network Implementation}
+\section{Neural Network}
 
-% How did we format the data for input to the NN?
-
+\subsection{Implementation}
 We considered a few options for our neural network implementation itself
 \begin{itemize}
 \item Use a well-known Java Neural Network library such as Neuroph
@@ -225,6 +222,10 @@ Future work for this implementation could include
 The source itself is relatively simple, with only 155 lines of code, including whitespace and comments, and no domain specific assumptions, other than error and activation functions.
 
 You can view the source for our implementation at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/NeuralNetwork.java}.
+
+% How did we format the data for input to the NN?
+\subsection{Input Layer}
+Normally a great deal of effort is spent in extracting the input features for a neural network. We naively fed every data point collected by the smartwatch's accelerometer into the neural network to begin testing faster. We expected to have to come back and revise this approach, but our results were surprisingly accurate. This was in large part thanks to our topology optimization techniques. 
 
 \section{Testing Harness}
 
