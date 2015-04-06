@@ -31,11 +31,11 @@
 % Abstract
 This report outlines our group's efforts in Smartwatch Gesture Recognition using artificial neural networks. Smartwatches are increasing in popularity and are becoming an increasingly viable input modality for other smart devices. In their current form, however; they are little more than a delivery system for notifications. Our work attempts to bring hand and arm gestures into the set of user inputs for smartwatches.
 
-To this end, we set out to recreate the canonical \$1 Recognizer gesture set as outlined by \cite{Wobbrock}. We built both an Android smartphone and smartwatch application to collect training and testing samples. The data that we collected was comprised of the data from the smartwatch's accelerometer, gyroscope, and orientation sensor. 
+To this end, we set out to recreate the canonical \$1 Recognizer gesture set as outlined by \cite{Wobbrock}. We built both an Android smartphone and smartwatch application to collect training and testing samples. The data that we collected was comprised of the data from the smartwatch's accelerometer, gyroscope, and orientation sensor.
 
-We fed this data into a feed-forward multi-layer perceptron artificial neural network that leverages backpropagration. We built a genetic algorithm based optimizer to discover the optimal topology for the neural network. 
+We fed this data into a feed-forward multi-layer perceptron artificial neural network that leverages backpropagration. We built a genetic algorithm based optimizer to discover the optimal topology for the neural network.
 
-In the end we achieved a classification rate of about ninety five percent on a set of six gestures. 
+In the end we achieved a classification rate of about ninety five percent on a set of six gestures.
 
 Future work includes expanding classification to the entire \$1 Recognizer Gesture set and moving the neural network onto an Android smartphone to enable real-time classification.
 
@@ -166,7 +166,6 @@ The system comprised of one application on a Nexus 5 smartphone and one on an LG
   \caption{Screenshot of Android smartwatch sensor data collection app}
 \end{figure}
 
-
 The app interface is pictured in \ref{app}. There are four buttons and two indicators in the interface. The ``NEXT" and ``BACK" buttons are used to cycle through the different gestures in the \$1 Recognizer gesture set as well as some other gestures that we experimented with. The ``RECORD" button is used to start a two second data collection period on the smartwatch. The smart watch would vibrate at the beginning and end of the data collection. This was a useful feature because it reduced noise in our measurements by keeping the subject informed on when they were being tracked. In the first version, we only had the vibration at the beginning of the data collection period and time was wasted making sure that two seconds had passed before moving again.
 
 The other two features of the interface were for setting up the data collection system. The ``OFF" button is pressed to initiate the pairing between the watch and the phone. If the connection is successful, then the watch will vibrate. Otherwise, the ``FAILED" indicator would turn red indicating a connection issue.
@@ -187,9 +186,8 @@ The data was stored on the Android phone as a set of JSON files, one file per da
 
 These files were later downloaded to a computer, divided into testing and training data sets (in a ratio of 3 training to 1 testing), and checked into the same git repository as the rest of our project. You can browse our data sets on GitHub at \url{https://github.com/lucaswoj/gestures/tree/master/code/data}.
 
-\section{Neural Network}
+\section{Neural Network Implementation}
 
-\subsection{Implementation}
 We considered a few options for our neural network implementation itself
 \begin{itemize}
 \item Use a well-known Java Neural Network library such as Neuroph
@@ -211,23 +209,16 @@ class NeuralNetwork {
 
 }
 \end{verbatim}
+Building the implementation itself was relatively simple, requiring only 155 lines of code, including whitespace and comments, while making no domain specific assumptions, other than fixed error and activation functions. You can view the source for our implementation at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/NeuralNetwork.java}.
 
-Future work for this implementation could include
+Normally a great deal of effort is spent in extracting the input features for a neural network. We naively fed every data point collected by the smartwatch's accelerometer into the neural network to begin testing faster. We expected to have to come back and revise this approach, but our results were surprisingly accurate. This was in large part thanks to our topology optimization techniques.
+
+Future work for this Neural Network implementation could include
 \begin{itemize}
 \item Serialization and deserialization of trained neural networks, allowing them to be optimally trained once and unserialized on another device to be used for classification. It would not be advisable to retrain the neural network every time it is used on an Android device.
 \item Support for custom activation and error functions. Currently, a sigmoid activation function and sum-of-squares error function are hard-coded into the implementation but it would be relatively easy to support custom error and activation functions. This would allow a greater degree of performance tuning.
 \item Profiling and performance optimization on Android devices. In particular, we should make sure this implementation does not perform any unexpectedly high overhead operations and leverages SIMD wherever possible.
 \end{itemize}
-
-The source itself is relatively simple, with only 155 lines of code, including whitespace and comments, and no domain specific assumptions, other than error and activation functions.
-
-You can view the source for our implementation at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/NeuralNetwork.java}.
-
-% How did we format the data for input to the NN?
-\subsection{Input Layer}
-Normally a great deal of effort is spent in extracting the input features for a neural network. We naively fed every data point collected by the smartwatch's accelerometer into the neural network to begin testing faster. We expected to have to come back and revise this approach, but our results were surprisingly accurate. This was in large part thanks to our topology optimization techniques. 
-
-\section{Testing Harness}
 
 \section{Topology Optimizer}
 
@@ -237,23 +228,121 @@ Normally a great deal of effort is spent in extracting the input features for a 
 
 Once we had a functional neural network and repository of training and testing data, we had to determine the optimal topology for our neural network. Because performance is a concern for on-line analysis, we wanted to find the best trade off between the number of nodes in the network and the correctness of its classifications.
 
-To this end, we built a genetic-algorithms-based Neural Network topology optimizer. This program generated a population of random neural network topologies, each of which had between 1 and 10 hidden layers, each of which containing between 1 and 3000 hidden nodes. The fitness of each topology was calculated as the average error over 3 trials of training it on 2000 training samples and then testing it on all testing samples.
+To this end, we built a genetic-algorithms-based Neural Network topology optimizer. This program generated a population of random neural network topologies, each of which had between 1 and 10 hidden layers, each of which containing between 1 and 3000 hidden nodes. The fitness of each topology was calculated as the average error over 3 trials of training it on 2000 training samples and then testing it on all testing samples. Those source of the genetic algorithm implementation is available at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/GeneticAlgorithm.java} and the toplogy optimizer itself is available at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/NeuralNetworkToplogyOptimizer.java}.
+
+The output from one run of the optimizer is included below
+\begin{verbatim}
+run:
+(Learning Rate = 0.3177511286361675, Neurons = [1350, 109, 16, 163, 6]) -> 0.01809906014232526
+(Learning Rate = 0.4766532990752531, Neurons = [1350, 124, 43, 12, 6]) -> 0.027723291672896135
+(Learning Rate = 0.6279935857136263, Neurons = [1350, 72, 182, 56, 140, 142, 6]) -> 0.011229537280073964
+(Learning Rate = 0.5310811568398671, Neurons = [1350, 82, 78, 127, 149, 6]) -> 0.02182149594713116
+(Learning Rate = 0.8089939111277789, Neurons = [1350, 10, 31, 21, 50, 185, 21, 92, 6]) -> 0.008828007363121879
+(Learning Rate = 0.4087868730628017, Neurons = [1350, 187, 6]) -> 8.076474465403242E-6
+(Learning Rate = 0.30390387218495124, Neurons = [1350, 74, 70, 174, 75, 6]) -> 0.013191692336301665
+(Learning Rate = 0.9707081433596534, Neurons = [1350, 116, 86, 144, 129, 193, 92, 6]) -> 0.0028974051819703633
+(Learning Rate = 0.644234584155702, Neurons = [1350, 99, 6, 101, 112, 6]) -> 0.025476821846910958
+(Learning Rate = 0.6841974622917397, Neurons = [1350, 17, 149, 25, 37, 6]) -> 0.02507604826716109
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) -> 0.03144369922376641
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.01990885250838224
+(Learning Rate = 0.4874661418537136, Neurons = [1350, 141, 6]) -> 3.0279984746400484E-5
+(Learning Rate = 0.6566775592063535, Neurons = [1350, 167, 172, 10, 54, 163, 131, 6]) -> 2.146507085876901E-5
+Fittest individual for gen 0 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) with a fitness of 0.03144369922376641
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) -> 0.030468949180510102
+(Learning Rate = 0.5009742954639536, Neurons = [1350, 109, 16, 163, 6]) -> 0.015649015473299707
+(Learning Rate = 0.525300971784586, Neurons = [1350, 16, 163, 6]) -> 0.016318222059383835
+(Learning Rate = 0.644234584155702, Neurons = [1350, 99, 6, 101, 109, 16, 163, 6]) -> 0.01453446772418862
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 83, 114, 89, 84, 181, 70, 6]) -> 0.009552461994174529
+(Learning Rate = 0.4228480787496478, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.021628280821963684
+(Learning Rate = 0.526620160357891, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.025507332921813484
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 17, 149, 25, 37, 6]) -> 0.018173252383497162
+(Learning Rate = 0.5604439416154776, Neurons = [1350, 43, 12, 6]) -> 0.024903168267139723
+(Learning Rate = 0.656095524002683, Neurons = [1350, 72, 182, 56, 140, 142, 6]) -> 1.4074616091970498E-5
+(Learning Rate = 0.3177511286361675, Neurons = [1350, 109, 84, 181, 70, 6]) -> 0.0167024373509718
+(Learning Rate = 0.6841974622917397, Neurons = [1350, 17, 181, 70, 6]) -> 0.023240549685242466
+(Learning Rate = 0.4740692281703266, Neurons = [1350, 99, 6, 101, 112, 6]) -> 0.024105916713264793
+(Learning Rate = 0.5281910643122265, Neurons = [1350, 82, 78, 127, 149, 6]) -> 1.7186812573632222E-4
+Fittest individual for gen 1 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) with a fitness of 0.030468949180510102
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) -> 0.026501981452541422
+(Learning Rate = 0.46314389985320287, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.011964148427551367
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 83, 114, 89, 16, 83, 114, 89, 82, 6]) -> 0.013313957174261783
+(Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 6, 101, 112, 6]) -> 0.02284015630902933
+(Learning Rate = 0.5535227705206938, Neurons = [1350, 17, 181, 70, 6]) -> 0.021193599279236135
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 163, 6]) -> 0.02931202810038351
+(Learning Rate = 0.525300971784586, Neurons = [1350, 12, 6]) -> 0.013964614167194501
+(Learning Rate = 0.4916460101825627, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.014940468267044675
+(Learning Rate = 0.4619111871068007, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.02313277258377968
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 17, 181, 70, 6]) -> 0.01552707091290958
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 17, 149, 25, 114, 89, 82, 6]) -> 0.011531441724608961
+(Learning Rate = 0.3177511286361675, Neurons = [1350, 109, 84, 16, 163, 6]) -> 0.027796048575703333
+(Learning Rate = 0.5259605660712385, Neurons = [1350, 84, 181, 70, 6]) -> 0.024675600857305444
+(Learning Rate = 0.644234584155702, Neurons = [1350, 99, 6, 101, 109, 16, 43, 12, 6]) -> 0.01479717198864683
+Fittest individual for gen 2 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 163, 6]) with a fitness of 0.02931202810038351
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 163, 6]) -> 0.016212450823540704
+(Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 6, 83, 114, 89, 82, 6]) -> 0.016777497868682607
+(Learning Rate = 0.47739495501788276, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.018257743717360816
+(Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 83, 114, 89, 16, 83, 114, 89, 82, 6]) -> 0.013589497451483853
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 84, 181, 70, 6]) -> 0.015804450653294413
+(Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 82, 6]) -> 0.01765253125873002
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 83, 114, 89, 16, 83, 84, 16, 163, 6]) -> 0.0108894933828492
+(Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 17, 84, 16, 163, 6]) -> 0.01478543034490948
+(Learning Rate = 0.5256307689279123, Neurons = [1350, 84, 181, 70, 6]) -> 0.03229962390098822
+(Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 17, 181, 70, 6]) -> 0.017530957721475844
+(Learning Rate = 0.525300971784586, Neurons = [1350, 83, 114, 89, 82, 6]) -> 0.02895320492110076
+(Learning Rate = 0.525300971784586, Neurons = [1350, 82, 6]) -> 7.897657860758158E-4
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 163, 6]) -> 0.028354330909753166
+(Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 17, 149, 25, 114, 89, 82, 6]) -> 0.011410822257659253
+Fittest individual for gen 3 is (Learning Rate = 0.5256307689279123, Neurons = [1350, 84, 181, 70, 6]) with a fitness of 0.03229962390098822
+(Learning Rate = 0.5256307689279123, Neurons = [1350, 84, 181, 70, 6]) -> 0.015664834564288698
+(Learning Rate = 0.5256307689279123, Neurons = [1350, 84, 16, 163, 6]) -> 0.026838012550314826
+(Learning Rate = 0.5013479634012343, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.02210372785393405
+(Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 17, 84, 16, 163, 6]) -> 0.014928884362703664
+(Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 82, 6]) -> 0.01638208592080125
+(Learning Rate = 0.4622834350610985, Neurons = [1350, 16, 17, 149, 25, 114, 89, 82, 6]) -> 0.013950901199574506
+(Learning Rate = 0.47739495501788276, Neurons = [1350, 16, 83, 82, 6]) -> 0.013264134354098896
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 83, 114, 89, 82, 6]) -> 0.03155202333063235
+(Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 17, 149, 25, 114, 89, 16, 83, 114, 89, 82, 6]) -> 0.008172196700327325
+(Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 84, 16, 163, 6]) -> 0.025167312248294573
+(Learning Rate = 0.525300971784586, Neurons = [1350, 70, 6]) -> 0.002125339784063195
+(Learning Rate = 0.525300971784586, Neurons = [1350, 114, 89, 82, 6]) -> 0.026242690348012646
+(Learning Rate = 0.525300971784586, Neurons = [1350, 82, 6]) -> 7.574676719772601E-4
+(Learning Rate = 0.3824765184136448, Neurons = [1350, 16, 17, 84, 16, 163, 6]) -> 0.01662136328544388
+Fittest individual for gen 4 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 83, 114, 89, 82, 6]) with a fitness of 0.03155202333063235
+(Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 83, 114, 89, 82, 6]) -> 0.025701838865946413
+(Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 84, 17, 149, 25, 114, 89, 82, 6]) -> 0.011111175793988473
+(Learning Rate = 0.46077047366557966, Neurons = [1350, 99, 84, 16, 163, 6]) -> 0.02490848896494631
+(Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 99, 84, 17, 163, 6]) -> 0.017231489979284167
+(Learning Rate = 0.5254658703562491, Neurons = [1350, 114, 89, 82, 6]) -> 0.02744146257955627
+(Learning Rate = 0.46060557509391653, Neurons = [1350, 114, 89, 82, 6]) -> 0.026251317466264464
+(Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 17, 149, 25, 114, 89, 16, 83, 114, 89, 82, 6]) -> 0.007925273084074624
+(Learning Rate = 0.5133244675929102, Neurons = [1350, 114, 89, 82, 6]) -> 0.02774000712777018
+(Learning Rate = 0.4419122409074395, Neurons = [1350, 16, 17, 84, 16, 163, 6]) -> 0.015994372956955532
+(Learning Rate = 0.4864013420161133, Neurons = [1350, 84, 181, 70, 6]) -> 0.015331784077198748
+(Learning Rate = 0.3824765184136448, Neurons = [1350, 16, 25, 114, 89, 82, 6]) -> 0.012845543366035708
+(Learning Rate = 0.46077047366557966, Neurons = [1350, 99, 84, 16, 163, 6]) -> 0.028060743606298035
+(Learning Rate = 0.48623644344445016, Neurons = [1350, 16, 17, 149, 25, 114, 89, 16, 83, 114, 89, 82, 6]) -> 0.008476229040258914
+(Learning Rate = 0.39591017840324705, Neurons = [1350, 114, 89, 82, 6]) -> 0.0252610650718709
+Fittest individual for gen 5 is (Learning Rate = 0.46077047366557966, Neurons = [1350, 99, 84, 16, 163, 6]) with a fitness of 0.028060743606298035
+\end{verbatim}
+The data is noisy, but we can see some clear trends. The best individual in this (relatively short) optimizer run had a topology of $1350, 84, 181, 70, 6$. There were a number of individuals that had comparable fitnesses with many more neurons (i.e. $1350, 84, 16, 83, 114, 89, 82, 6$), however the optimal performance, both in terms of classification and resource utilization, seems to occur in the neighborhood of $1350, 84, 181, 70, 6$.
+
+After more thorough optimizer runs and experimentation, we decided to use a topology of $1350, 150, 150, 50, 50, 6$ for the rest of our analysis. This topology seemed to strike the best compromise between performance and classification accuracy.
 
 \chapter{Results}
 
-\section{Codebase Metrics}
+The performance of our neural network exceeded our expectations.
 
-% How many lines of code do we have?
+The training phase is expensive, but in a commercial application it would only have to be done once and then the trained neural network could be shipped with the product.
 
-\section{Training Performance}
+After training a neural network on 5000 training samples it could classify gestures
+\begin{itemize}
+\item with an error rate of 5\%
+\item in an average of 0.261037 milliseconds on an 2.3 GHz Intel Core i7
+\item with a memory overhead of less than 1 kilobyte
+\end{itemize}
+With these performance metrics, we believe our approach could feasibly run on a smartphone, or perhaps a powerful future smartwatch, in order to provide real time gesture recognition.
 
-% CPU cost of training
-% Number of data points needed to train system
-% Difficulty of collecting data
-
-\section{Classification Performance}
-
-% Performance relative to the $1 Recognizer
+The overall error rate of our neural network is higher than that of the \$1 recognizer, which had approximately 1\% error with as few as 5 training samples, but we believe that our result is significant given the nature of our input data -- which was higher dimensional, noisier, and more abstract than the input data for the \$1 recognizer -- as well as the performance of our system -- with a minimal memory footprint and submillisecond classification time. We believe the classification accuracy can be significantly improved with a larger repository of training data.
 
 \chapter{Conclusion}
 
