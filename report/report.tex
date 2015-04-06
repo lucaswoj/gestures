@@ -10,7 +10,7 @@
 
 \addbibresource{report.bib}
 
-\linespread{1.3}
+\linespread{1.5}
 
 \title{Smartwatch Gesture Recognition}
 \date{\today}
@@ -250,9 +250,9 @@ Once we had a functional neural network and repository of training and testing d
 
 To this end, we built a genetic-algorithms-based Neural Network topology optimizer. This program generated a population of random neural network topologies, each of which had between 1 and 10 hidden layers, each of which containing between 1 and 3000 hidden nodes. The fitness of each topology was calculated as the average error over 3 trials of training it on 2000 training samples and then testing it on all testing samples. Those source of the genetic algorithm implementation is available at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/GeneticAlgorithm.java} and the toplogy optimizer itself is available at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/NeuralNetworkToplogyOptimizer.java}.
 
-The output from one run of the optimizer is included below
+The first few generations from one run of the optimizer are included below
+\tiny
 \begin{verbatim}
-run:
 (Learning Rate = 0.3177511286361675, Neurons = [1350, 109, 16, 163, 6]) -> 0.01809906014232526
 (Learning Rate = 0.4766532990752531, Neurons = [1350, 124, 43, 12, 6]) -> 0.027723291672896135
 (Learning Rate = 0.6279935857136263, Neurons = [1350, 72, 182, 56, 140, 142, 6]) -> 0.011229537280073964
@@ -268,6 +268,7 @@ run:
 (Learning Rate = 0.4874661418537136, Neurons = [1350, 141, 6]) -> 3.0279984746400484E-5
 (Learning Rate = 0.6566775592063535, Neurons = [1350, 167, 172, 10, 54, 163, 131, 6]) -> 2.146507085876901E-5
 Fittest individual for gen 0 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) with a fitness of 0.03144369922376641
+
 (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) -> 0.030468949180510102
 (Learning Rate = 0.5009742954639536, Neurons = [1350, 109, 16, 163, 6]) -> 0.015649015473299707
 (Learning Rate = 0.525300971784586, Neurons = [1350, 16, 163, 6]) -> 0.016318222059383835
@@ -283,6 +284,7 @@ Fittest individual for gen 0 is (Learning Rate = 0.525300971784586, Neurons = [1
 (Learning Rate = 0.4740692281703266, Neurons = [1350, 99, 6, 101, 112, 6]) -> 0.024105916713264793
 (Learning Rate = 0.5281910643122265, Neurons = [1350, 82, 78, 127, 149, 6]) -> 1.7186812573632222E-4
 Fittest individual for gen 1 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) with a fitness of 0.030468949180510102
+
 (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 181, 70, 6]) -> 0.026501981452541422
 (Learning Rate = 0.46314389985320287, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.011964148427551367
 (Learning Rate = 0.3690428584240425, Neurons = [1350, 16, 83, 114, 89, 16, 83, 114, 89, 82, 6]) -> 0.013313957174261783
@@ -298,6 +300,7 @@ Fittest individual for gen 1 is (Learning Rate = 0.525300971784586, Neurons = [1
 (Learning Rate = 0.5259605660712385, Neurons = [1350, 84, 181, 70, 6]) -> 0.024675600857305444
 (Learning Rate = 0.644234584155702, Neurons = [1350, 99, 6, 101, 109, 16, 43, 12, 6]) -> 0.01479717198864683
 Fittest individual for gen 2 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 163, 6]) with a fitness of 0.02931202810038351
+
 (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 163, 6]) -> 0.016212450823540704
 (Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 6, 83, 114, 89, 82, 6]) -> 0.016777497868682607
 (Learning Rate = 0.47739495501788276, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.018257743717360816
@@ -313,6 +316,7 @@ Fittest individual for gen 2 is (Learning Rate = 0.525300971784586, Neurons = [1
 (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 163, 6]) -> 0.028354330909753166
 (Learning Rate = 0.44717191510431425, Neurons = [1350, 16, 17, 149, 25, 114, 89, 82, 6]) -> 0.011410822257659253
 Fittest individual for gen 3 is (Learning Rate = 0.5256307689279123, Neurons = [1350, 84, 181, 70, 6]) with a fitness of 0.03229962390098822
+
 (Learning Rate = 0.5256307689279123, Neurons = [1350, 84, 181, 70, 6]) -> 0.015664834564288698
 (Learning Rate = 0.5256307689279123, Neurons = [1350, 84, 16, 163, 6]) -> 0.026838012550314826
 (Learning Rate = 0.5013479634012343, Neurons = [1350, 16, 83, 114, 89, 82, 6]) -> 0.02210372785393405
@@ -328,6 +332,7 @@ Fittest individual for gen 3 is (Learning Rate = 0.5256307689279123, Neurons = [
 (Learning Rate = 0.525300971784586, Neurons = [1350, 82, 6]) -> 7.574676719772601E-4
 (Learning Rate = 0.3824765184136448, Neurons = [1350, 16, 17, 84, 16, 163, 6]) -> 0.01662136328544388
 Fittest individual for gen 4 is (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 83, 114, 89, 82, 6]) with a fitness of 0.03155202333063235
+
 (Learning Rate = 0.525300971784586, Neurons = [1350, 84, 16, 83, 114, 89, 82, 6]) -> 0.025701838865946413
 (Learning Rate = 0.39591017840324705, Neurons = [1350, 99, 84, 17, 149, 25, 114, 89, 82, 6]) -> 0.011111175793988473
 (Learning Rate = 0.46077047366557966, Neurons = [1350, 99, 84, 16, 163, 6]) -> 0.02490848896494631
@@ -344,6 +349,8 @@ Fittest individual for gen 4 is (Learning Rate = 0.525300971784586, Neurons = [1
 (Learning Rate = 0.39591017840324705, Neurons = [1350, 114, 89, 82, 6]) -> 0.0252610650718709
 Fittest individual for gen 5 is (Learning Rate = 0.46077047366557966, Neurons = [1350, 99, 84, 16, 163, 6]) with a fitness of 0.028060743606298035
 \end{verbatim}
+\normalsize
+
 The data is noisy, but we can see some clear trends. The best individual in this (relatively short) optimizer run had a topology of $1350, 84, 181, 70, 6$. There were a number of individuals that had comparable fitnesses with many more neurons (i.e. $1350, 84, 16, 83, 114, 89, 82, 6$), however the optimal performance, both in terms of classification and resource utilization, seems to occur in the neighborhood of $1350, 84, 181, 70, 6$.
 
 After more thorough optimizer runs and experimentation, we decided to use a topology of $1350, 150, 150, 50, 50, 6$ for the rest of our analysis. This topology seemed to strike the best compromise between performance and classification accuracy.
