@@ -182,7 +182,16 @@ In addition, it reported data from a virtual ``orientation" sensor, which was a 
 
 While we collected data from all these sensors, our neural network seemed to perform best when using only the accelerometer data.
 
-The data was stored on the Android phone as a set of JSON files, one file per data collection period. % TODO ARIEL specify JSON file format. What where the fields and how were they used?
+The data was stored on the Android phone as a set of JSON files, one file per data collection period. Every sensor reading has four components:
+
+\begin{enumerate}
+\item X-value
+\item Y-value
+\item Z-value
+\item Timestamp
+\end{enumerate}
+
+Each reading is one JSON object with fields, ``x", ``y", ``z", and ``timestamp" which is collected into an array. There is one array of JSON objects per smartwatch sensor. Our input vectors consisted of every ``x", ``y", ``z" field from every sensor reading.
 
 These files were later downloaded to a computer, divided into testing and training data sets (in a ratio of 3 training to 1 testing), and checked into the same git repository as the rest of our project. You can browse our data sets on GitHub at \url{https://github.com/lucaswoj/gestures/tree/master/code/data}.
 
@@ -219,6 +228,17 @@ Future work for this Neural Network implementation could include
 \item Support for custom activation and error functions. Currently, a sigmoid activation function and sum-of-squares error function are hard-coded into the implementation but it would be relatively easy to support custom error and activation functions. This would allow a greater degree of performance tuning.
 \item Profiling and performance optimization on Android devices. In particular, we should make sure this implementation does not perform any unexpectedly high overhead operations and leverages SIMD wherever possible.
 \end{itemize}
+
+The source itself is relatively simple, with only 155 lines of code, including whitespace and comments, and no domain specific assumptions, other than error and activation functions.
+
+You can view the source for our implementation at \url{https://github.com/lucaswoj/gestures/blob/master/code/src/org/braintrust/NeuralNetwork.java}.
+
+% How did we format the data for input to the NN?
+\subsection{Input Layer}
+Normally a great deal of effort is spent in extracting the input features for a neural network. We naively fed every data point collected by the smartwatch's accelerometer into the neural network to begin testing faster. For every data collection period there were four hundred and fifty accelerometer data points, each of which includes an X, Y, and Z value. This gives one thousand three hundred and fifty inputs to our neural network. We expected to have to come back and revise this approach, but our results were surprisingly accurate. This was in large part thanks to our topology optimization techniques. 
+
+\section{Testing Harness}
+
 
 \section{Topology Optimizer}
 
@@ -347,6 +367,16 @@ The overall error rate of our neural network is higher than that of the \$1 reco
 \chapter{Conclusion}
 
 % Conclusion
+% Conclusion
+In conclusion, our work has validated the idea of using gestures as input to smartwatches. There are several followup questions that could serve as the focus for future works:
+
+\begin{itemize}
+\item Will the classification rate remained at ninety-five percent when the entire \$1 Recognizer gesture set has been trained?
+\item How can the gesture recognition be seamlessly integrated into an application?
+\item What applications lend themselves to smartwatch gesture-based control?
+\item Can the data from the gyroscope and orientation sensors be leveraged to improve the classification rate?
+\item 
+\end{itemize}
 
 \printbibliography
 
